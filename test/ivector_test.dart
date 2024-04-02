@@ -3,12 +3,12 @@ import "package:test/test.dart";
 import 'combinators_stubs.dart' as c;
 //import 'package:propcheck/propcheck.dart';
 import 'propcheck_stubs.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 
 void main() {
-  final qc = new QuickCheck(maxSize: 300, seed: 42);
+  final qc = QuickCheck(maxSize: 300, seed: 42);
   final intLists = c.listsOf(c.ints);
   final intIVectors = intLists.map(ivector);
 
@@ -51,26 +51,26 @@ void main() {
 
   test("IVector update", () {
     qc.check(forall2(intLists, c.ints, (dynamicL, dynamicI) {
-      final l = dynamicL as List<int>;
-      final i = dynamicI as int;
+      final l = dynamicL;
+      final i = dynamicI;
       if (l.length == 0) {
         return true;
       } else {
         final index = i % l.length;
-        final im = new IVector.from(l).setIfPresent(index, i);
+        final im = IVector.from(l).setIfPresent(index, i);
         l[index] = i;
-        return im == new IVector.from(l);
+        return im == IVector.from(l);
       }
     }));
   });
 
   test("IVector removeFirst", () {
     qc.check(forall(intLists, (dynamicL) {
-      final l = dynamicL as List<int>;
-      final v = new IVector.from(l);
+      final l = dynamicL;
+      final v = IVector.from(l);
       if (l.length > 0) {
         final removed = l.removeAt(0);
-        return v.removeFirst().fold(() => false, (t) => t.value1 == removed && t.value2 == new IVector.from(l));
+        return v.removeFirst().fold(() => false, (t) => t.value1 == removed && t.value2 == IVector.from(l));
       } else {
         return v.removeFirst() == none();
       }
@@ -79,11 +79,11 @@ void main() {
 
   test("IVector dropFirst", () {
     qc.check(forall(intLists, (dynamicL) {
-      final l = dynamicL as List<int>;
-      final v = new IVector.from(l);
+      final l = dynamicL;
+      final v = IVector.from(l);
       if (l.length > 0) {
         l.removeAt(0);
-        return v.dropFirst() == new IVector.from(l);
+        return v.dropFirst() == IVector.from(l);
       } else {
         return v.dropFirst() == v;
       }
@@ -92,11 +92,11 @@ void main() {
 
   test("IVector removeLast", () {
     qc.check(forall(intLists, (dynamicL) {
-      final l = dynamicL as List<int>;
-      final v = new IVector.from(l);
+      final l = dynamicL;
+      final v = IVector.from(l);
       if (l.length > 0) {
         final removed = l.removeLast();
-        return v.removeLast().fold(() => false, (t) => t.value1 == removed && t.value2 == new IVector.from(l));
+        return v.removeLast().fold(() => false, (t) => t.value1 == removed && t.value2 == IVector.from(l));
       } else {
         return v.removeLast() == none();
       }
@@ -105,11 +105,11 @@ void main() {
 
   test("IVector dropLast", () {
     qc.check(forall(intLists, (dynamicL) {
-      final l = dynamicL as List<int>;
-      final v = new IVector.from(l);
+      final l = dynamicL;
+      final v = IVector.from(l);
       if (l.length > 0) {
         l.removeLast();
-        return v.dropLast() == new IVector.from(l);
+        return v.dropLast() == IVector.from(l);
       } else {
         return v.dropLast() == v;
       }
@@ -118,7 +118,7 @@ void main() {
 
   test("IVector foldLeftWithIndexBetween", () {
     qc.check(forall(intIVectors, (dynamicV) {
-      final v = dynamicV as IVector<int>;
+      final v = dynamicV;
       final partialSum = v.foldLeftWithIndexBetween<int>(1, v.length()-2, 0, (sum, _, i) => sum+i);
       return partialSum == v.dropFirst().dropLast().concatenate(IntSumMi);
     }));
@@ -133,7 +133,7 @@ void main() {
 
   group("IVector FoldableOps", () => checkFoldableOpsProperties(intIVectors));
 
-  test("iterable", () => qc.check(forall(intIVectors, (v) => v == ivector((v as IVector<int>).toIterable()))));
+  test("iterable", () => qc.check(forall(intIVectors, (v) => v == ivector((v).toIterable()))));
 
   test("flattenOption", () {
     qc.check(forall(intIVectors, (IVector<int> v) {
@@ -146,7 +146,7 @@ void main() {
 
   test("flattenIVector", () {
     qc.check(forall(intIVectors, (dynamicV) {
-      final v = dynamicV as IVector<int>;
+      final v = dynamicV;
       final vv = v.map((int i) => i % 2 == 0 ? ivector([i]) : emptyVector<int>());
       final flattenedV = IVector.flattenIVector(vv);
       final evenV = v.filter((i) => i % 2 == 0);

@@ -3,26 +3,26 @@ import "package:test/test.dart";
 import 'combinators_stubs.dart' as c;
 //import 'package:propcheck/propcheck.dart';
 import 'propcheck_stubs.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 void main() {
-  final qc = new QuickCheck(maxSize: 300, seed: 42);
+  final qc = QuickCheck(maxSize: 300, seed: 42);
   final intLists = c.listsOf(c.ints);
-  final simpleIntSets = intLists.map((il) => new ISet<int>.fromIList(IntOrder, ilist(il)));
+  final simpleIntSets = intLists.map((il) => ISet<int>.fromIList(IntOrder, ilist(il)));
   final intSets = simpleIntSets.flatMap((a) => simpleIntSets.flatMap((b) => simpleIntSets.map((c) => a + b + c)));
 
   test("insertion", () {
     qc.check(forall(intLists, (dynamicL) {
-      final l = dynamicL as List<int>;
+      final l = dynamicL;
       return ilist(l.toSet().toList()..sort()) == iset(l).toIList();
     }));
   });
 
   test("deletion", () {
     qc.check(forall2(intLists, intLists, (dynamicL1, dynamicL2) {
-      final l1 = dynamicL1 as List<int>;
-      final l2 = dynamicL2 as List<int>;
+      final l1 = dynamicL1;
+      final l2 = dynamicL2;
       final actual = l2.fold<ISet<int>>(iset(l1), (s, i) => s.remove(i)).toIList();
       final expected = ilist(l1.where((i) => !l2.contains(i)).toSet().toList()..sort());
       return actual == expected;
@@ -37,14 +37,14 @@ void main() {
     expect(s, iset(["row", "your", "boat"]));
   });
 
-  group("ISetMonoid", () => checkMonoidLaws(new ISetMonoid(IntOrder), intSets));
+  group("ISetMonoid", () => checkMonoidLaws(ISetMonoid(IntOrder), intSets));
 
   group("ISetTreeFo", () => checkFoldableLaws(ISetFo, intSets));
 
   group("ISet FoldableOps", () => checkFoldableOpsProperties(intSets));
 
   test("iterable", () => qc.check(forall(intSets, (dynamicS) {
-    final s = dynamicS as ISet<int>;
+    final s = dynamicS;
     return s.toIList() == ilist(s.toIterable());
   })));
 

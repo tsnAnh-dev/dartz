@@ -1,15 +1,15 @@
 library free_composition_example;
 
-import 'package:dartz/dartz.dart';
-import 'package:dartz/dartz_unsafe.dart';
+import 'package:dart3z/dartz.dart';
+import 'package:dart3z/dartz_unsafe.dart';
 import '../free_io/mock_io.dart' as mockIO;
 import 'free_rand.dart';
 import 'dart:async';
 
 // Technique: Compose IOOp and RandOp algebras, deriving Free algebras and interpreters capable of handling both.
-final ioAndRand = new Free2<IOOp, RandOp>();
-final ioOps = new IOOps<Either<IOOp, RandOp>>(ioAndRand.firstComposer);
-final randOps = new RandOps<Either<IOOp, RandOp>>(ioAndRand.secondComposer);
+final ioAndRand = Free2<IOOp, RandOp>();
+final ioOps = IOOps<Either<IOOp, RandOp>>(ioAndRand.firstComposer);
+final randOps = RandOps<Either<IOOp, RandOp>>(ioAndRand.secondComposer);
 final unsafePerformIOAndRand = ioAndRand.interpreter<Future>(FutureM, unsafeIOInterpreter, unsafeRandInterpreter);
 
 // Technique: Construct RT program, sequencing both RandOp and IOOp through the composed algebra

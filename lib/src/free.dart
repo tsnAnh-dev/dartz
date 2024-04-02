@@ -1,14 +1,12 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 typedef Free<F, A> _FreeF<F, A>(dynamic x);
 
 abstract class Free<F, A> implements MonadOps<Free<F, dynamic>, A> {
 
-  @override Free<F, B> map<B>(B f(A a)) => bind((a) => new Pure(f(a)));
+  @override Free<F, B> map<B>(B f(A a)) => bind((a) => Pure(f(a)));
 
-  @override Free<F, B> bind<B>(Function1<A, Free<F, B>> f) => new Bind(this, (a) => f(cast(a)));
+  @override Free<F, B> bind<B>(Function1<A, Free<F, B>> f) => Bind(this, (a) => f(cast(a)));
 
   @override Free<F, B> replace<B>(B replacement) => map((_) => replacement);
 
@@ -32,13 +30,13 @@ abstract class Free<F, A> implements MonadOps<Free<F, dynamic>, A> {
 
 
   Future<A> foldMapFuture(Future f(F fa)) =>
-    /*step().*/ fold((a) => new Future.microtask(() => a), (fa) => f(fa).then((a) => cast<A>(a)), (ffb, f2) => ffb.foldMapFuture(f).then((c) => f2(c).foldMapFuture(f)));
+    /*step().*/ fold((a) => Future.microtask(() => a), (fa) => f(fa).then((a) => cast<A>(a)), (ffb, f2) => ffb.foldMapFuture(f).then((c) => f2(c).foldMapFuture(f)));
 
   Evaluation<E, R, W, S, A> foldMapEvaluation<E, R, W, S>(EvaluationMonad<E, R, W, S> m, Evaluation<E, R, W, S, dynamic> f(F fa)) =>
     /*step().*/ fold((a) => m.pure(a), (fa) => f(fa).map((a) => cast<A>(a)), (ffb, f2) => ffb.foldMapEvaluation(m, f).bind((c) => f2(c).foldMapEvaluation(m, f)));
 
 
-  @override Free<F, B> flatMap<B>(Function1<A, Free<F, B>> f) => new Bind(this, (a) => f(cast(a)));
+  @override Free<F, B> flatMap<B>(Function1<A, Free<F, B>> f) => Bind(this, (a) => f(cast(a)));
 
   @override Free<F, B> andThen<B>(Free<F, B> next) => bind((_) => next);
 
@@ -99,7 +97,7 @@ abstract class Free<F, A> implements MonadOps<Free<F, dynamic>, A> {
   static Free<F, U> map20<F, A, A2 extends A, B, B2 extends B, C, C2 extends C, D, D2 extends D, E, E2 extends E, FF, F2 extends FF, G, G2 extends G, H, H2 extends H, I, I2 extends I, J, J2 extends J, K, K2 extends K, L, L2 extends L, M, M2 extends M, N, N2 extends N, O, O2 extends O, P, P2 extends P, Q, Q2 extends Q, R, R2 extends R, S, S2 extends S, T, T2 extends T, U>(Free<F, A2> fa, Free<F, B2> fb, Free<F, C2> fc, Free<F, D2> fd, Free<F, E2> fe, Free<F, F2> ff, Free<F, G2> fg, Free<F, H2> fh, Free<F, I2> fi, Free<F, J2> fj, Free<F, K2> fk, Free<F, L2> fl, Free<F, M2> fm, Free<F, N2> fn, Free<F, O2> fo, Free<F, P2> fp, Free<F, Q2> fq, Free<F, R2> fr, Free<F, S2> fs, Free<F, T2> ft, U fun(A a, B b, C c, D d, E e, FF f, G g, H h, I i, J j, K k, L l, M m, N n, O o, P p, Q q, R r, S s, T t)) =>
     fa.flatMap((a) => fb.flatMap((b) => fc.flatMap((c) => fd.flatMap((d) => fe.flatMap((e) => ff.flatMap((f) => fg.flatMap((g) => fh.flatMap((h) => fi.flatMap((i) => fj.flatMap((j) => fk.flatMap((k) => fl.flatMap((l) => fm.flatMap((m) => fn.flatMap((n) => fo.flatMap((o) => fp.flatMap((p) => fq.flatMap((q) => fr.flatMap((r) => fs.flatMap((s) => ft.map((t) => fun(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)))))))))))))))))))));
 
-  static Free<F, Unit> ifM<F>(Free<F, bool> fbool, Free<F, Unit> ifTrue) => fbool.flatMap((bool b) => b ? ifTrue : new Pure(unit));
+  static Free<F, Unit> ifM<F>(Free<F, bool> fbool, Free<F, Unit> ifTrue) => fbool.flatMap((bool b) => b ? ifTrue : Pure(unit));
 
   @override Free<F, B> ap<B>(Free<F, Function1<A, B>> ff) => ff.bind((f) => map(f)); // TODO: optimize
 
@@ -129,13 +127,13 @@ class Bind<F, A, B> extends Free<F, A> {
 
 class FreeMonad<F> extends Functor<Free<F, dynamic>> with Applicative<Free<F, dynamic>>, Monad<Free<F, dynamic>> {
 
-  @override Free<F, A> pure<A>(A a) => new Pure(a);
+  @override Free<F, A> pure<A>(A a) => Pure(a);
 
   @override Free<F, B> bind<A, B>(covariant Free<F, A> fa, covariant Function1<A, Free<F, B>> f) => fa.bind(f);
 
 }
 
-final FreeMonad FreeM = new FreeMonad();
-FreeMonad<F> freeM<F>() => new FreeMonad();
+final FreeMonad FreeM = FreeMonad();
+FreeMonad<F> freeM<F>() => FreeMonad();
 
-Free<F, A> liftF<F, A>(F fa) => new Suspend(fa);
+Free<F, A> liftF<F, A>(F fa) => Suspend(fa);

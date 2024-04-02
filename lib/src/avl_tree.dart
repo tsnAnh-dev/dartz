@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 // Not technically stack safe
@@ -12,9 +10,9 @@ class AVLTree<A> implements FoldableOps<AVLTree, A> {
 
   AVLTree(this._order, this._root);
 
-  AVLTree<A> insert(A a) => new AVLTree(_order, _root.insert(_order, a));
+  AVLTree<A> insert(A a) => AVLTree(_order, _root.insert(_order, a));
 
-  AVLTree<A> remove(A a) => new AVLTree(_order, _root.remove(_order, a));
+  AVLTree<A> remove(A a) => AVLTree(_order, _root.remove(_order, a));
 
   @override B foldLeft<B>(B z, B f(B previous, A a)) => _root.foldLeft(z, f);
 
@@ -26,9 +24,9 @@ class AVLTree<A> implements FoldableOps<AVLTree, A> {
 
   @override B foldMap<B>(Monoid<B> bMonoid, B f(A a)) => foldLeft(bMonoid.zero(), (p, a) => bMonoid.append(p, f(a)));
 
-  factory AVLTree.fromIList(Order<A> order, IList<A> l) => l.foldLeft(new AVLTree(order, emptyAVLNode()), (tree, A a) => tree.insert(a));
+  factory AVLTree.fromIList(Order<A> order, IList<A> l) => l.foldLeft(AVLTree(order, emptyAVLNode()), (tree, A a) => tree.insert(a));
 
-  IList<A> toIList() => foldRight(nil(), (A a, IList<A> p) => new Cons(a, p));
+  IList<A> toIList() => foldRight(nil(), (A a, IList<A> p) => Cons(a, p));
 
   Option<A> get(A a) => _root.get(_order, a);
 
@@ -57,7 +55,7 @@ class AVLTree<A> implements FoldableOps<AVLTree, A> {
     foldLeft<Tuple2<B, int>>(tuple2(z, 0), (t, a) => tuple2(f(t.value1, t.value2, a), t.value2+1)).value1; // TODO: optimize
 
   @override Option<B> foldMapO<B>(Semigroup<B> si, B f(A a)) =>
-    foldMap(new OptionMonoid(si), composeF(some, f)); // TODO: optimize
+    foldMap(OptionMonoid(si), composeF(some, f)); // TODO: optimize
 
   @override B foldRightWithIndex<B>(B z, B f(int i, A a, B previous)) =>
     foldRight<Tuple2<B, int>>(tuple2(z, length()-1), (a, t) => tuple2(f(t.value2, a, t.value1), t.value2-1)).value1; // TODO: optimize
@@ -74,7 +72,7 @@ class AVLTree<A> implements FoldableOps<AVLTree, A> {
 
   // PURISTS BEWARE: side effecty stuff below -- proceed with caution!
 
-  Iterable<A> toIterable() => new _AVLTreeIterable(this);
+  Iterable<A> toIterable() => _AVLTreeIterable(this);
 
   Iterator<A> iterator() => toIterable().iterator;
 
@@ -117,29 +115,29 @@ class _NonEmptyAVLNode<A> extends _AVLNode<A> {
     final Ordering o = order.order(a, _a);
     if (o == Ordering.LT) {
       final newLeft = _left.insert(order, a);
-      return new _NonEmptyAVLNode(_a, newLeft, _right)._rebalance();
+      return _NonEmptyAVLNode(_a, newLeft, _right)._rebalance();
     } else if (o == Ordering.GT) {
       final newRight = _right.insert(order, a);
-      return new _NonEmptyAVLNode(_a, _left, newRight)._rebalance();
+      return _NonEmptyAVLNode(_a, _left, newRight)._rebalance();
     } else {
-      return new _NonEmptyAVLNode(a, _left, _right);
+      return _NonEmptyAVLNode(a, _left, _right);
     }
   }
 
   _AVLNode<A> remove(Order<A> order, A a) {
     final Ordering o = order.order(a, _a);
     if (o == Ordering.LT) {
-      return new _NonEmptyAVLNode(_a, _left.remove(order, a), _right)._rebalance();
+      return _NonEmptyAVLNode(_a, _left.remove(order, a), _right)._rebalance();
     } else if (o == Ordering.GT) {
-      return new _NonEmptyAVLNode(_a, _left, _right.remove(order, a))._rebalance();
+      return _NonEmptyAVLNode(_a, _left, _right.remove(order, a))._rebalance();
     } else {
-      return _left._removeMax().fold(() => _right, (lr) => new _NonEmptyAVLNode(lr.value2, lr.value1, _right)._rebalance());
+      return _left._removeMax().fold(() => _right, (lr) => _NonEmptyAVLNode(lr.value2, lr.value1, _right)._rebalance());
     }
   }
 
   Option<Tuple2<_AVLNode<A>, A>> _removeMax() =>
       _right._removeMax().fold(() => some(tuple2(_left, _a)),
-          (rightResult) => some(tuple2(new _NonEmptyAVLNode(_a, _left, rightResult.value1)._rebalance(), rightResult.value2)));
+          (rightResult) => some(tuple2(_NonEmptyAVLNode(_a, _left, rightResult.value1)._rebalance(), rightResult.value2)));
 
   _AVLNode<A> _rebalance() {
     final b = balance;
@@ -160,11 +158,11 @@ class _NonEmptyAVLNode<A> extends _AVLNode<A> {
     }
   }
 
-  _NonEmptyAVLNode<A> llRotate(_NonEmptyAVLNode<A> l) => new _NonEmptyAVLNode(l._a, l._left, new _NonEmptyAVLNode(_a, l._right, _right));
+  _NonEmptyAVLNode<A> llRotate(_NonEmptyAVLNode<A> l) => _NonEmptyAVLNode(l._a, l._left, _NonEmptyAVLNode(_a, l._right, _right));
 
   _NonEmptyAVLNode<A> doubleLrRotate(_NonEmptyAVLNode<A> l) => llRotate(l.rrRotate(l._right._unsafeGetNonEmpty()!));
 
-  _NonEmptyAVLNode<A> rrRotate(_NonEmptyAVLNode<A> r) => new _NonEmptyAVLNode(r._a, new _NonEmptyAVLNode(_a, _left, r._left), r._right);
+  _NonEmptyAVLNode<A> rrRotate(_NonEmptyAVLNode<A> r) => _NonEmptyAVLNode(r._a, _NonEmptyAVLNode(_a, _left, r._left), r._right);
 
   _NonEmptyAVLNode<A> doubleRlRotate(_NonEmptyAVLNode<A> r) => rrRotate(r.llRotate(r._left._unsafeGetNonEmpty()!));
 
@@ -252,7 +250,7 @@ class _EmptyAVLNode<A> extends _AVLNode<A> {
 
   @override Option<A> get(Order<A> order, A a) => none();
 
-  @override _AVLNode<A> insert(Order<A> order, A a) => new _NonEmptyAVLNode(a, emptyAVLNode(), emptyAVLNode());
+  @override _AVLNode<A> insert(Order<A> order, A a) => _NonEmptyAVLNode(a, emptyAVLNode(), emptyAVLNode());
 
   @override Option<A> max() => none();
 
@@ -275,27 +273,27 @@ class _EmptyAVLNode<A> extends _AVLNode<A> {
   _NonEmptyAVLNode<A>? _unsafeGetNonEmpty() => null;
 }
 
-_AVLNode<A> emptyAVLNode<A>() => new _EmptyAVLNode();
+_AVLNode<A> emptyAVLNode<A>() => _EmptyAVLNode();
 
 class AVLTreeMonoid<A> extends Monoid<AVLTree<A>> {
   final Order<A> _tOrder;
 
   AVLTreeMonoid(this._tOrder);
 
-  @override AVLTree<A> zero() => new AVLTree<A>(_tOrder, emptyAVLNode());
+  @override AVLTree<A> zero() => AVLTree<A>(_tOrder, emptyAVLNode());
 
   @override AVLTree<A> append(AVLTree<A> a1, AVLTree<A> t2) => t2.foldLeft(a1, (p, a) => p.insert(a));
 }
 
-final Foldable<AVLTree> AVLTreeFo = new FoldableOpsFoldable<AVLTree>();
+final Foldable<AVLTree> AVLTreeFo = FoldableOpsFoldable<AVLTree>();
 
 class _AVLTreeIterable<A> extends Iterable<A> {
   final AVLTree<A> _tree;
   _AVLTreeIterable(this._tree);
-  @override Iterator<A> get iterator => new _AVLTreeIterator(_tree._root._unsafeGetNonEmpty());
+  @override Iterator<A> get iterator => _AVLTreeIterator(_tree._root._unsafeGetNonEmpty());
 }
 
-class _AVLTreeIterator<A> extends Iterator<A> {
+class _AVLTreeIterator<A> implements Iterator<A> {
 
   bool _started = false;
   _NonEmptyAVLNode<A>? _currentNode;

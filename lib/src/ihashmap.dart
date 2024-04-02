@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 // NOTE: IHashMap is backed by an AVL tree, not by a traditional hash table, so lookup/insert is O(log n), not O(1)
@@ -11,37 +9,37 @@ class IHashMap<K, V> implements TraversableOps<IHashMap<K, dynamic>, V> {
 
   IHashMap.internal(this._map);
 
-  factory IHashMap.empty() => new IHashMap.internal(new IMap.empty(IntOrder));
+  factory IHashMap.empty() => IHashMap.internal(IMap.empty(IntOrder));
 
-  factory IHashMap.from(Map<K, V> m) => m.keys.fold(new IHashMap.empty(), (IHashMap<K, V> p, K k) => p.put(k, m[k]!));
+  factory IHashMap.from(Map<K, V> m) => m.keys.fold(IHashMap.empty(), (IHashMap<K, V> p, K k) => p.put(k, m[k]!));
 
   factory IHashMap.fromPairs(FoldableOps<dynamic, Tuple2<K, V>> foldableOps, Order<K> kOrder) =>
-    foldableOps.foldLeft(new IHashMap.empty(), (acc, kv) => kv.apply(acc.put));
+    foldableOps.foldLeft(IHashMap.empty(), (acc, kv) => kv.apply(acc.put));
 
   Option<V> get(K k) => _map.get(k.hashCode).bind((candidates) =>
       candidates.find((candidate) => candidate.value1 == k).map((candidate) => candidate.value2));
 
   Option<V> operator[](K k) => get(k);
 
-  IHashMap<K, V> put(K k, V v) => new IHashMap.internal(_map.modify(k.hashCode,
-      (existing) => new Cons(tuple2(k, v), existing.filter((kv) => kv.value1 != k)),
-      new Cons(tuple2(k, v), nil())));
+  IHashMap<K, V> put(K k, V v) => IHashMap.internal(_map.modify(k.hashCode,
+      (existing) => Cons(tuple2(k, v), existing.filter((kv) => kv.value1 != k)),
+      Cons(tuple2(k, v), nil())));
 
-  IHashMap<K, V> remove(K k) => new IHashMap.internal(_map.modify(k.hashCode,
+  IHashMap<K, V> remove(K k) => IHashMap.internal(_map.modify(k.hashCode,
       (existing) => existing.filter((kv) => kv.value1 != k),
       nil()));
 
-  IHashMap<K, V> modify(K k, V f(V v), V dflt) => new IHashMap.internal(_map.modify(k.hashCode,
+  IHashMap<K, V> modify(K k, V f(V v), V dflt) => IHashMap.internal(_map.modify(k.hashCode,
       (existing) => existing
           .find((kv) => kv.value1 == k)
           .fold(() => cons(tuple2(k, dflt), existing), (_) => existing.map((kv) => kv.value1 == k ? tuple2(kv.value1, f(kv.value2)) : kv)),
-      new Cons(tuple2(k, dflt), nil())));
+      Cons(tuple2(k, dflt), nil())));
 
   Option<IHashMap<K, V>> set(K k, V v) => get(k).map((_) => put(k, v)); // TODO: optimize
 
-  @override IHashMap<K, V2> map<V2>(V2 f(V v)) => new IHashMap.internal(_map.map((kvs) => kvs.map((kv) => kv.map2(f))));
+  @override IHashMap<K, V2> map<V2>(V2 f(V v)) => IHashMap.internal(_map.map((kvs) => kvs.map((kv) => kv.map2(f))));
 
-  Map<K, V> toMap() => foldLeftKV(new Map(), (p, K k, V v) => p..[k] = v);
+  Map<K, V> toMap() => foldLeftKV(Map(), (p, K k, V v) => p..[k] = v);
 
   B foldLeftKV<B>(B z, B f(B previous, K k, V v)) =>
       _map.foldLeft(z, (prev, kvs) => kvs.foldLeft(prev, (pprev, kv) => f(pprev, kv.value1, kv.value2)));
@@ -78,7 +76,7 @@ class IHashMap<K, V> implements TraversableOps<IHashMap<K, dynamic>, V> {
     foldLeft<Tuple2<B, int>>(tuple2(z, 0), (t, a) => tuple2(f(t.value1, t.value2, a), t.value2+1)).value1; // TODO: optimize
 
   @override Option<B> foldMapO<B>(Semigroup<B> si, B f(V a)) =>
-    foldMap(new OptionMonoid(si), composeF(some, f)); // TODO: optimize
+    foldMap(OptionMonoid(si), composeF(some, f)); // TODO: optimize
 
   @override B foldRightWithIndex<B>(B z, B f(int i, V a, B previous)) =>
     foldRight<Tuple2<B, int>>(tuple2(z, length()-1), (a, t) => tuple2(f(t.value2, a, t.value1), t.value2-1)).value1; // TODO: optimize
@@ -120,6 +118,6 @@ class IHashMap<K, V> implements TraversableOps<IHashMap<K, dynamic>, V> {
   void forEachKV(void sideEffect(K k, V v)) => foldLeftKV(null, (_, k, v) => sideEffect(k, v));
 }
 
-final Traversable<IHashMap> IHashMapTr = new TraversableOpsTraversable<IHashMap>();
+final Traversable<IHashMap> IHashMapTr = TraversableOpsTraversable<IHashMap>();
 
-IHashMap<K, V> ihashmap<K, V>(Map<K, V> m) => new IHashMap.from(m);
+IHashMap<K, V> ihashmap<K, V>(Map<K, V> m) => IHashMap.from(m);

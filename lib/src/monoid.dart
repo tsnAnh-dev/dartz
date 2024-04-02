@@ -1,8 +1,6 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class Monoid<A> extends Semigroup<A> {
+sealed class Monoid<A> extends Semigroup<A> {
   A zero();
 }
 
@@ -17,4 +15,4 @@ class _AnonymousMonoid<A> extends Monoid<A> {
   @override A append(A a1, A a2) => _append(a1, a2);
 }
 
-Monoid<A> monoid<A>(A zero(), A append(A t1, A t2)) => new _AnonymousMonoid(zero, append);
+Monoid<A> monoid<A>(A zero(), A append(A t1, A t2)) => _AnonymousMonoid(zero, append);

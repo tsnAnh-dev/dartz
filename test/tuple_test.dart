@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 import 'combinators_stubs.dart' as c;
 //import 'package:enumerators/enumerators.dart' as e;
 import 'enumerators_stubs.dart' as e;
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 void main() {

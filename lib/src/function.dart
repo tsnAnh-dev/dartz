@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 typedef A Function0 <A>                                                            ();
@@ -63,5 +61,5 @@ class Function0TraversableMonad extends Traversable<Function0> with Applicative<
   @override B foldMap<A, B>(Monoid<B> bMonoid, covariant Function0<A> fa, B f(A a)) => f(fa());
 }
 
-final Function0TraversableMonad Function0TrM = new Function0TraversableMonad();
+final Function0TraversableMonad Function0TrM = Function0TraversableMonad();
 TraversableMonad<Function0<A>> function0TrM<A>() => cast(Function0TrM);

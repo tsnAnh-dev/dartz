@@ -1,6 +1,3 @@
-// ignore_for_file: unnecessary_new
-// ignore_for_file: unnecessary_const
-
 part of dartz_streaming;
 
 class Text {
@@ -46,11 +43,11 @@ class Text {
       final trimmedBytesAndSpill = _findSpill([oldSpill, rawBytes].expand(id).toList(growable: false));
       return Pipe.produce(_utf8.decode(trimmedBytesAndSpill.value1), loop(trimmedBytesAndSpill.value2));
     });
-    return loop(new UnmodifiableListView([]));
+    return loop(UnmodifiableListView([]));
   }
 
   static Conveyor<From<String>, String> regexp(String regexpSource, {int group = 0}) {
-    final regexp = new RegExp(regexpSource);
+    final regexp = RegExp(regexpSource);
     final pipe = Pipe.consume<String, String>((s) {
       final matches = ilist(regexp.allMatches(s)).filter((m) => m.groupCount >= group);
       return matches.foldRight(Pipe.halt(), (match, acc) => Pipe.produce(match.group(group) ?? "", acc));

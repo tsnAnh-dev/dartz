@@ -2,12 +2,12 @@ library free_io_mock_io;
 
 import 'dart:collection';
 import 'dart:convert';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'dart:async';
-import 'package:dartz/dartz_streaming.dart';
+import 'package:dart3z/dartz_streaming.dart';
 
 // Technique: Instantiate EvaluationMonad using types for either, reader, writer and state, as well as a monoid for the writer type
-final EvaluationMonad<String, IMap<String, IVector<String>>, IVector<String>, IMap<String, int>> MockM = new EvaluationMonad(ivectorMi());
+final EvaluationMonad<String, IMap<String, IVector<String>>, IVector<String>, IMap<String, int>> MockM = EvaluationMonad(ivectorMi());
 
 class _MockFileRef implements FileRef {
   final String name;
@@ -40,19 +40,19 @@ Evaluation<String, IMap<String, IVector<String>>, IVector<String>, IMap<String, 
     return MockM.raiseError(io.failure.toString());
 
   } else if (io is OpenFile) {
-    return MockM.pure(new _MockFileRef(io.path));
+    return MockM.pure(_MockFileRef(io.path));
 
   } else if (io is CloseFile) {
     return MockM.pure(unit);
 
   } else if (io is ReadBytes) {
-    return mockReadFile((io.file as _MockFileRef).name).map((s) => s == null ? new UnmodifiableListView(<int>[]) : new UnmodifiableListView(_utf8.encode(s)));
+    return mockReadFile((io.file as _MockFileRef).name).map((s) => s == null ? UnmodifiableListView(<int>[]) : UnmodifiableListView(_utf8.encode(s)));
 
   } else if (io is WriteBytes) {
     return MockM.write(ivector(["${(io.file as _MockFileRef).name}: ${_utf8.decode(io.bytes.toList())}"]));
 
   } else if (io is Execute) {
-    return MockM.pure(new ExecutionResult(0, "<<< Mocked result of '${io.command} ${io.arguments.intercalate(StringMi, " ")}' >>>", ""));
+    return MockM.pure(ExecutionResult(0, "<<< Mocked result of '${io.command} ${io.arguments.intercalate(StringMi, " ")}' >>>", ""));
 
   } else if (io is Delay) {
     return _interpret(io.a);

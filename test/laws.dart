@@ -6,16 +6,16 @@ import 'propcheck_stubs.dart';
 //import 'package:enumerators/enumerators.dart';
 import 'enumerators_stubs.dart';
 
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 
 bool defaultEquality(a, b) => a == b;
 
-final defaultQC = new QuickCheck(maxSize: 300, seed: 42);
+final defaultQC = QuickCheck(maxSize: 300, seed: 42);
 
 Tuple2<dynamic, String> giveDollar(dynamic something) => tuple2(something, "\$");
 Tuple2<dynamic, String> giveHash(dynamic something) => tuple2(something, "#");
 
-void checkFunctorLaws(Functor F, Enumeration enumeration, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkFunctorLaws(Functor F, Enumeration enumeration, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("functor laws", () {
@@ -30,7 +30,7 @@ void checkFunctorLaws(Functor F, Enumeration enumeration, {bool equality(a, b): 
   });
 }
 
-void checkFoldableLaws(Foldable F, Enumeration enumeration, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkFoldableLaws(Foldable F, Enumeration enumeration, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("foldable laws", () {
@@ -47,7 +47,7 @@ void checkFoldableLaws(Foldable F, Enumeration enumeration, {bool equality(a, b)
   });
 }
 
-void checkFoldableOpsProperties(Enumeration enumeration, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkFoldableOpsProperties(Enumeration enumeration, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("foldable ops properties", () {
@@ -63,7 +63,7 @@ void checkFoldableOpsProperties(Enumeration enumeration, {bool equality(a, b): d
   });
 }
 
-void checkTraversableLaws(Traversable T, Enumeration enumeration, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkTraversableLaws(Traversable T, Enumeration enumeration, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("traversable laws", () {
@@ -84,7 +84,7 @@ void checkTraversableLaws(Traversable T, Enumeration enumeration, {bool equality
   checkFoldableLaws(T, enumeration, equality: equality, qc: qc);
 }
 
-void checkMonadLaws<F>(Monad<F> M, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkMonadLaws<F>(Monad<F> M, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
   F double(dynamic i) => M.pure(i*2);
   F inc(dynamic i) => M.pure(i+1);
@@ -106,7 +106,7 @@ void checkMonadLaws<F>(Monad<F> M, {bool equality(a, b): defaultEquality, QuickC
   checkFunctorLaws(M, c.ints.map((i) => M.pure(i)), equality: equality, qc: qc);
 }
 
-void checkFoldableMonadLaws(Foldable F, Monad M, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkFoldableMonadLaws(Foldable F, Monad M, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("foldable+monad laws", () {
@@ -117,7 +117,7 @@ void checkFoldableMonadLaws(Foldable F, Monad M, {bool equality(a, b): defaultEq
 
 }
 
-void checkSemigroupLaws(Semigroup Si, Enumeration enumeration, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkSemigroupLaws(Semigroup Si, Enumeration enumeration, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("semigroup laws", () {
@@ -129,7 +129,7 @@ void checkSemigroupLaws(Semigroup Si, Enumeration enumeration, {bool equality(a,
 }
 
 
-void checkMonoidLaws(Monoid Mi, Enumeration enumeration, {bool equality(a, b): defaultEquality, QuickCheck? qc: null}) {
+void checkMonoidLaws(Monoid Mi, Enumeration enumeration, {bool equality(a, b) = defaultEquality, QuickCheck? qc = null}) {
   qc = qc != null ? qc : defaultQC;
 
   group("monoid laws", () {

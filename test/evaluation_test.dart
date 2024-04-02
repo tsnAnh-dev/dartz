@@ -1,19 +1,19 @@
 import 'package:test/test.dart';
 //import 'package:propcheck/propcheck.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'dart:async';
 //import 'laws.dart';
 
 void main() {
-  //final qc = new QuickCheck(maxSize: 300, seed: 42);
+  //final qc = QuickCheck(maxSize: 300, seed: 42);
 
   test("demo", () async {
-    final EvaluationMonad<String, String, Tuple2<IList<String>, String>, int> M = new EvaluationMonad(tuple2Monoid(ilistMi(), StringMi));
+    final EvaluationMonad<String, String, Tuple2<IList<String>, String>, int> M = EvaluationMonad(tuple2Monoid(ilistMi(), StringMi));
 
     final inc =
         M.get().bind((oldState) {
           final newState = oldState+1;
-          return M.put(newState).andThen(M.write(new Tuple2(ilist(["State transition from $oldState to $newState"]), "!")));
+          return M.put(newState).andThen(M.write(Tuple2(ilist(["State transition from $oldState to $newState"]), "!")));
         });
 
     final Evaluation p =
@@ -28,19 +28,19 @@ void main() {
 
   group("EvaluationM", () {
     // TODO: async law checks
-    // checkMonadLaws(qc, new EvaluationMonad(IListMi));
+    // checkMonadLaws(qc, EvaluationMonad(IListMi));
   });
 
   test("stack safety", () async {
-    final M = new EvaluationMonad<Unit, Unit, Unit, int>(UnitMi);
+    final M = EvaluationMonad<Unit, Unit, Unit, int>(UnitMi);
     final deep = M.modify((i) => i+1).replicate_(10000);
     expect(await deep.state(unit, 0), right(10000));
   });
 
   test("liftFuture", () async {
-    final M = new EvaluationMonad<Unit, String, Unit, Unit>(UnitMi);
+    final M = EvaluationMonad<Unit, String, Unit, Unit>(UnitMi);
 
-    Future<String> expensiveComputation(String input) => new Future(() => input.toUpperCase());
+    Future<String> expensiveComputation(String input) => Future(() => input.toUpperCase());
 
     final ev = M.ask().bind((s) => M.liftFuture(expensiveComputation(s)));
 
@@ -48,7 +48,7 @@ void main() {
   });
 
   test("liftEither", () async {
-    final M = new EvaluationMonad<String, IList<int>, Unit, Unit>(UnitMi);
+    final M = EvaluationMonad<String, IList<int>, Unit, Unit>(UnitMi);
 
     Either<String, int> first(IList<int> l) => l.headOption.toEither(() => "Empty list");
 

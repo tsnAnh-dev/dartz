@@ -2,9 +2,9 @@ library streaming_io_example_2;
 
 import '../free_io/mock_io.dart';
 import 'dart:io';
-import 'package:dartz/dartz.dart';
-import 'package:dartz/dartz_streaming.dart';
-import 'package:dartz/dartz_unsafe.dart';
+import 'package:dart3z/dartz.dart';
+import 'package:dart3z/dartz_streaming.dart';
+import 'package:dart3z/dartz_unsafe.dart';
 
 main() async {
   // set up some paths

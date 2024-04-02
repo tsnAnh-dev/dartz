@@ -1,7 +1,7 @@
 library streaming_io_example;
 
-import 'package:dartz/dartz_streaming.dart';
-import 'package:dartz/dartz_unsafe.dart';
+import 'package:dart3z/dartz_streaming.dart';
+import 'package:dart3z/dartz_unsafe.dart';
 
 import 'dart:io';
 

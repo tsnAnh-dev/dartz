@@ -1,13 +1,11 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 // TODO: unify with Free?
 
 abstract class Trampoline<A> implements MonadOps<Trampoline, A> {
-  Trampoline<B> pure<B>(B b) => new _TPure(b);
+  Trampoline<B> pure<B>(B b) => _TPure(b);
   @override Trampoline<B> map<B>(B f(A a)) => bind((a) => pure(f(a)));
-  @override Trampoline<B> bind<B>(Function1<A, Trampoline<B>> f) => new _TBind<B, A>(this, cast(f));
+  @override Trampoline<B> bind<B>(Function1<A, Trampoline<B>> f) => _TBind<B, A>(this, cast(f));
 
   @override Trampoline<Tuple2<B, A>> strengthL<B>(B b) => map((a) => tuple2(b, a));
 
@@ -25,7 +23,7 @@ abstract class Trampoline<A> implements MonadOps<Trampoline, A> {
       if (fabind != null) {
         final fa2 = fabind._fa;
         final f2 = fabind._f;
-        current = new _TBind(cast(fa2), (a2) => new _TBind(f2(a2), f));
+        current = _TBind(cast(fa2), (a2) => _TBind(f2(a2), f));
       } else {
         final res = f(cast(fa._unsafeGetTPure()!._a));
         current = res._unsafeGetTBind();
@@ -40,7 +38,7 @@ abstract class Trampoline<A> implements MonadOps<Trampoline, A> {
 
   @override Trampoline<B> ap<B>(Trampoline<Function1<A, B>> ff) => ff.bind((f) => map(f)); // TODO: optimize
 
-  @override Trampoline<B> flatMap<B>(Function1<A, Trampoline<B>> f) => new _TBind(this, cast(f));
+  @override Trampoline<B> flatMap<B>(Function1<A, Trampoline<B>> f) => _TBind(this, cast(f));
 
   @override Trampoline<B> replace<B>(B replacement) => map((_) => replacement);
 
@@ -66,9 +64,9 @@ class _TBind<A, B> extends Trampoline<A> {
   _TBind<A, B>? _unsafeGetTBind() => this;
 }
 
-final Monad<Trampoline> TrampolineM = new MonadOpsMonad((a) => new _TPure(a));
+final Monad<Trampoline> TrampolineM = MonadOpsMonad((a) => _TPure(a));
 
-Trampoline<T> treturn<T>(T t) => new _TPure(t);
+Trampoline<T> treturn<T>(T t) => _TPure(t);
 
-final Trampoline<Unit> tunit = new _TPure(unit);
-Trampoline<T> tcall<T>(Function0<Trampoline<T>> thunk) => new _TBind(cast(tunit), (_) => cast(thunk()));
+final Trampoline<Unit> tunit = _TPure(unit);
+Trampoline<T> tcall<T>(Function0<Trampoline<T>> thunk) => _TBind(cast(tunit), (_) => cast(thunk()));

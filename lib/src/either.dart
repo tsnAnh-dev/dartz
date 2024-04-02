@@ -1,8 +1,6 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class Either<L, R> implements TraversableMonadOps<Either<L, dynamic>, R> {
+sealed class Either<L, R> implements TraversableMonadOps<Either<L, dynamic>, R> {
   const Either();
 
   B fold<B>(B ifLeft(L l), B ifRight(R r));
@@ -28,9 +26,9 @@ abstract class Either<L, R> implements TraversableMonadOps<Either<L, dynamic>, R
 
   IVector<Either<L, R2>> traverseIVector<R2>(IVector<R2> f(R r)) => fold((l) => emptyVector<Either<L, R2>>().appendElement(left(l)), (R r) => f(r).map(right));
 
-  Future<Either<L, R2>> traverseFuture<R2>(Future<R2> f(R r)) => fold((l) => new Future.microtask(() => left(l)), (R r) => f(r).then(right));
+  Future<Either<L, R2>> traverseFuture<R2>(Future<R2> f(R r)) => fold((l) => Future.microtask(() => left(l)), (R r) => f(r).then(right));
 
-  State<S, Either<L, R2>> traverseState<S, R2>(State<S, R2> f(R r)) => fold((l) => new State((s) => tuple2(left(l), s)), (r) => f(r).map(right));
+  State<S, Either<L, R2>> traverseState<S, R2>(State<S, R2> f(R r)) => fold((l) => State((s) => tuple2(left(l), s)), (r) => f(r).map(right));
 
   Task<Either<L, R2>> traverseTask<R2>(Task<R2> f(R r)) => fold((l) => Task.delay(() => left(l)), (R r) => f(r).map(right));
 
@@ -178,13 +176,13 @@ abstract class Either<L, R> implements TraversableMonadOps<Either<L, dynamic>, R
 
   // PURISTS BEWARE: side effecty stuff below -- proceed with caution!
 
-  Iterable<R> toIterable() => fold((_) => const Iterable.empty(), (r) => new _SingletonIterable(r));
+  Iterable<R> toIterable() => fold((_) => const Iterable.empty(), (r) => _SingletonIterable(r));
   Iterator<R> iterator() => toIterable().iterator;
 
   void forEach(void sideEffect(R r)) => fold((_) => null, sideEffect);
 }
 
-class Left<L, R> extends Either<L, R> {
+final class Left<L, R> extends Either<L, R> {
   final L _l;
   const Left(this._l);
   L get value => _l;
@@ -193,7 +191,7 @@ class Left<L, R> extends Either<L, R> {
   @override int get hashCode => _l.hashCode;
 }
 
-class Right<L, R> extends Either<L, R> {
+final class Right<L, R> extends Either<L, R> {
   final R _r;
   const Right(this._r);
   R get value => _r;
@@ -203,8 +201,8 @@ class Right<L, R> extends Either<L, R> {
 }
 
 
-Either<L, R> left<L, R>(L l) => new Left(l);
-Either<L, R> right<L, R>(R r) => new Right(r);
+Either<L, R> left<L, R>(L l) => Left(l);
+Either<L, R> right<L, R>(R r) => Right(r);
 Either<dynamic, A> catching<A>(Function0<A> thunk) {
   try {
     return right(thunk());
@@ -213,14 +211,22 @@ Either<dynamic, A> catching<A>(Function0<A> thunk) {
   }
 }
 
-class EitherMonad<L> extends MonadOpsMonad<Either<L, dynamic>> {
+Future<Either<dynamic, A>> catchAsync<A>(final Function0<FutureOr<A>> f) async {
+  try {
+    return right(await f());
+  } catch (e) {
+    return left(e);
+  }
+}
+
+final class EitherMonad<L> extends MonadOpsMonad<Either<L, dynamic>> {
   EitherMonad(): super(right);
 }
 
-final EitherMonad EitherM = new EitherMonad();
-EitherMonad<L> eitherM<L>() => new EitherMonad();
-final Traversable<Either> EitherTr = new TraversableOpsTraversable<Either>();
-Traversable<Either<L, R>> eitherTr<L, R>() => new TraversableOpsTraversable();
+final EitherMonad EitherM = EitherMonad();
+EitherMonad<L> eitherM<L>() => EitherMonad();
+final Traversable<Either> EitherTr = TraversableOpsTraversable<Either>();
+Traversable<Either<L, R>> eitherTr<L, R>() => TraversableOpsTraversable();
 /*
 class EitherTMonad<M> extends Functor<M> with Applicative<M>, Monad<M> {
   Monad _stackedM;
@@ -231,5 +237,5 @@ class EitherTMonad<M> extends Functor<M> with Applicative<M>, Monad<M> {
   @override M bind<A, B>(M mea, M f(A a)) => cast(_stackedM.bind(mea, (Either e) => e.fold((l) => _stackedM.pure(left(l)), cast(f))));
 }
 
-Monad eitherTMonad(Monad mmonad) => new EitherTMonad(mmonad);
+Monad eitherTMonad(Monad mmonad) => EitherTMonad(mmonad);
 */

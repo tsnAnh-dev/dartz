@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 abstract class RPNOp<T> {}
@@ -8,34 +8,34 @@ class PushSymbol extends RPNOp<Unit> {
   final String symbol;
   PushSymbol(this.symbol);
 }
-Free<RPNOp, Unit> pushSymbol(String symbol) => liftF(new PushSymbol(symbol));
+Free<RPNOp, Unit> pushSymbol(String symbol) => liftF(PushSymbol(symbol));
 
 class Push extends RPNOp<Unit> {
   final double value;
   Push(this.value);
 }
-Free<RPNOp, Unit> push(double value) => liftF(new Push(value));
+Free<RPNOp, Unit> push(double value) => liftF(Push(value));
 
 class Pop extends RPNOp<double> {}
-final Free<RPNOp, double> pop = liftF(new Pop());
+final Free<RPNOp, double> pop = liftF(Pop());
 
 final Free<RPNOp, Unit> dup = pop.bind((i) => push(i).andThen(push(i)));
 
 final Free<RPNOp, Unit> multiply = Free.map2(pop, pop, (double a, double b) => a*b).bind(push);
 
 void main() {
-  final M = new EvaluationMonad<String, IMap<String, double>, IList<String>, IList<double>>(ilistMi());
+  final M = EvaluationMonad<String, IMap<String, double>, IList<String>, IList<double>>(ilistMi());
 
   Evaluation<String, IMap<String, double>, IList<String>, IList<double>, dynamic> rpnInterpreter(RPNOp<dynamic> op) {
     if (op is PushSymbol) {
       return M.asks((IMap<String, double> symbols) => symbols[op.symbol]).bind((Option<double> symbolValue) {
         return symbolValue.fold(() =>
             M.raiseError("Undefined symbol: ${op.symbol}"),
-            (double value) => M.write(ilist(["Pushing value of ${op.symbol}: $value"])).andThen(M.modify((IList<double> stack) => new Cons(value, stack))));
+            (double value) => M.write(ilist(["Pushing value of ${op.symbol}: $value"])).andThen(M.modify((IList<double> stack) => Cons(value, stack))));
       });
 
     } else if (op is Push) {
-      return M.modify((IList<double> stack) => new Cons(op.value, stack));
+      return M.modify((IList<double> stack) => Cons(op.value, stack));
 
     } else if (op is Pop) {
       return M.get().bind((IList<double> stack) {
@@ -45,7 +45,7 @@ void main() {
       });
 
     } else {
-      throw new UnimplementedError("Unimplemented RPNOp: $op");
+      throw UnimplementedError("Unimplemented RPNOp: $op");
     }
   }
 

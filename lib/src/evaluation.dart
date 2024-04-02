@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 // Prestacked Future<Either<E, Reader<R> + Writer<W> + State<S>>> monad.
@@ -12,18 +10,18 @@ class Evaluation<E, R, W, S, A> implements MonadOps<Evaluation<E, R, W, S, dynam
   Evaluation(this._W, this._run);
 
   Evaluation<E, R, W, S, B> pure<B>(B b) =>
-      new Evaluation(_W, (r, s) => new Future.value(new Right(new Tuple3(_W.zero(), s, b))));
+      Evaluation(_W, (r, s) => Future.value(Right(Tuple3(_W.zero(), s, b))));
 
   Evaluation<E, R, W, S, B> map<B>(B f(A a)) =>
-      new Evaluation(_W, (r, s) =>
+      Evaluation(_W, (r, s) =>
           run(r, s).then((leftOrRight) =>
-              leftOrRight.map((t) => new Tuple3(t.value1, t.value2, f(t.value3)))));
+              leftOrRight.map((t) => Tuple3(t.value1, t.value2, f(t.value3)))));
 
   Evaluation<E, R, W, S, B> bind<B>(Function1<A, Evaluation<E, R, W, S, B>> f) {
-    return new Evaluation(_W, (r, s) {
-      return new Future.microtask(() {
+    return Evaluation(_W, (r, s) {
+      return Future.microtask(() {
         return run(r, s).then((leftOrRight) {
-          return leftOrRight.fold((e) => new Future.value(new Left(e)), (t) {
+          return leftOrRight.fold((e) => Future.value(Left(e)), (t) {
             final w1 = t.value1;
             final s2 = t.value2;
             final a = t.value3;
@@ -32,7 +30,7 @@ class Evaluation<E, R, W, S, A> implements MonadOps<Evaluation<E, R, W, S, dynam
                 final w2 = t2.value1;
                 final s3 = t2.value2;
                 final b = t2.value3;
-                return new Tuple3(_W.append(w1, w2), s3, b);
+                return Tuple3(_W.append(w1, w2), s3, b);
               });
             });
           });
@@ -44,9 +42,9 @@ class Evaluation<E, R, W, S, A> implements MonadOps<Evaluation<E, R, W, S, dynam
   Evaluation<E, R, W, S, B> flatMap<B>(Function1<A, Evaluation<E, R, W, S, B>> f) => bind(f);
 
   Evaluation<E, R, W, S, A> handleError(Evaluation<E, R, W, S, A> onError(E err)) {
-    return new Evaluation(_W, (R r, S s) {
+    return Evaluation(_W, (R r, S s) {
       return run(r, s).then((e) {
-        return e.fold((l) => onError(l).run(r, s), (r) => new Future.value(right(r)));
+        return e.fold((l) => onError(l).run(r, s), (r) => Future.value(right(r)));
       });
     });
   }
@@ -82,39 +80,39 @@ class EvaluationMonad<E, R, W, S> extends Object with Functor<Evaluation<E, R, W
 
   @override Evaluation<E, R, W, S, B> bind<A, B>(covariant Evaluation<E, R, W, S, A> fa, covariant Function1<A, Evaluation<E, R, W, S, B>> f) => fa.bind(f);
 
-  @override Evaluation<E, R, W, S, A> pure<A>(A a) => new Evaluation(_W, (r, s) {
-    return new Future.value(new Right(new Tuple3(_W.zero(), s, a)));
+  @override Evaluation<E, R, W, S, A> pure<A>(A a) => Evaluation(_W, (r, s) {
+    return Future.value(Right(Tuple3(_W.zero(), s, a)));
   });
 
-  Evaluation<E, R, W, S, A> liftFuture<A>(Future<A> fut) => new Evaluation(_W, (r, s) {
-    return fut.then((ta) => new Right(new Tuple3(_W.zero(), s, ta)));
+  Evaluation<E, R, W, S, A> liftFuture<A>(Future<A> fut) => Evaluation(_W, (r, s) {
+    return fut.then((ta) => Right(Tuple3(_W.zero(), s, ta)));
   });
 
   Evaluation<E, R, W, S, A> liftEither<A>(Either<E, A> either) => either.fold(raiseError, pure);
 
   Evaluation<E, R, W, S, A> liftOption<A>(Option<A> oa, E ifNone()) => liftEither(oa.toEither(ifNone));
 
-  Evaluation<E, R, W, S, S> get() => new Evaluation(_W, (r, s) => new Future.value(new Right(new Tuple3(_W.zero(), s, s))));
+  Evaluation<E, R, W, S, S> get() => Evaluation(_W, (r, s) => Future.value(Right(Tuple3(_W.zero(), s, s))));
 
-  Evaluation<E, R, W, S, A> gets<A>(A f(S s)) => new Evaluation(_W, (r, s) => new Future.value(new Right(new Tuple3(_W.zero(), s, f(s)))));
+  Evaluation<E, R, W, S, A> gets<A>(A f(S s)) => Evaluation(_W, (r, s) => Future.value(Right(Tuple3(_W.zero(), s, f(s)))));
 
-  Evaluation<E, R, W, S, Unit> put(S s) => new Evaluation(_W, (r, _) => new Future.value(new Right(new Tuple3(_W.zero(), s, unit))));
+  Evaluation<E, R, W, S, Unit> put(S s) => Evaluation(_W, (r, _) => Future.value(Right(Tuple3(_W.zero(), s, unit))));
 
-  Evaluation<E, R, W, S, Unit> modify(S f(S s)) => new Evaluation(_W, (r, s) => new Future.value(new Right(new Tuple3(_W.zero(), f(s), unit))));
+  Evaluation<E, R, W, S, Unit> modify(S f(S s)) => Evaluation(_W, (r, s) => Future.value(Right(Tuple3(_W.zero(), f(s), unit))));
 
-  Evaluation<E, R, W, S, Unit> modifyE(Either<E, S> f(S s)) => new Evaluation(_W, (r, s) => new Future.value(f(s).map((s2) => new Tuple3(_W.zero(), s2, unit))));
+  Evaluation<E, R, W, S, Unit> modifyE(Either<E, S> f(S s)) => Evaluation(_W, (r, s) => Future.value(f(s).map((s2) => Tuple3(_W.zero(), s2, unit))));
 
-  Evaluation<E, R, W, S, Unit> write(W w) => new Evaluation(_W, (_, s) => new Future.value(new Right(new Tuple3(w, s, unit))));
+  Evaluation<E, R, W, S, Unit> write(W w) => Evaluation(_W, (_, s) => Future.value(Right(Tuple3(w, s, unit))));
 
-  Evaluation<E, R, W, S, R> ask() => new Evaluation(_W, (r, s) => new Future.value(new Right(new Tuple3(_W.zero(), s, r))));
+  Evaluation<E, R, W, S, R> ask() => Evaluation(_W, (r, s) => Future.value(Right(Tuple3(_W.zero(), s, r))));
 
   Evaluation<E, R, W, S, A> asks<A>(A f(R r)) => ask().map(f);
 
-  Evaluation<E, R, W, S, A> local<A>(R f(R r), Evaluation<E, R, W, S, A> fa) => new Evaluation(_W, (r, s) => fa.run(f(r), s));
+  Evaluation<E, R, W, S, A> local<A>(R f(R r), Evaluation<E, R, W, S, A> fa) => Evaluation(_W, (r, s) => fa.run(f(r), s));
 
-  Evaluation<E, R, W, S, A> scope<A>(R scopedR, Evaluation<E, R, W, S, A> fa) => new Evaluation(_W, (_, s) => fa.run(scopedR, s));
+  Evaluation<E, R, W, S, A> scope<A>(R scopedR, Evaluation<E, R, W, S, A> fa) => Evaluation(_W, (_, s) => fa.run(scopedR, s));
 
-  Evaluation<E, R, W, S, A> raiseError<A>(E err) => new Evaluation(_W, (r, s) => new Future.value(new Left(err)));
+  Evaluation<E, R, W, S, A> raiseError<A>(E err) => Evaluation(_W, (r, s) => Future.value(Left(err)));
 
   Evaluation<E, R, W, S, A> handleError<A>(Evaluation<E, R, W, S, A> ev, Evaluation<E, R, W, S, A> onError(E e)) => ev.handleError(onError);
 }

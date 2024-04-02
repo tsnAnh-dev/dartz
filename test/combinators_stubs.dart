@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'enumerators_stubs.dart';
 
-Enumeration<List<A>> listsOf<A>(Enumeration<A> enumeration) => enumeration.flatMap((a) => new Enumeration(() => new Stream.fromIterable([[], [a], [a, a], [a, a, a]])));
+Enumeration<List<A>> listsOf<A>(Enumeration<A> enumeration) => enumeration.flatMap((a) => Enumeration(() => Stream.fromIterable([[], [a], [a, a], [a, a, a]])));
 
 Enumeration<Map<K, V>> mapsOf<K, V>(Enumeration<K> keys, Enumeration<V> values) {
   List<K> ks = <K>[];
@@ -14,9 +14,9 @@ Enumeration<Map<K, V>> mapsOf<K, V>(Enumeration<K> keys, Enumeration<V> values) 
   });
 }
 
-final Enumeration<int> ints = new Enumeration(() => new Stream.fromIterable([-2, -1, 0, 1, 2]));
+final Enumeration<int> ints = Enumeration(() => Stream.fromIterable([-2, -1, 0, 1, 2]));
 
-final Enumeration<String> strings = new Enumeration(() => new Stream.fromIterable(["", "a", "ab", "abc"]));
+final Enumeration<String> strings = Enumeration(() => Stream.fromIterable(["", "a", "ab", "abc"]));
 
-final Enumeration<bool> bools = new Enumeration(() => new Stream.fromIterable([false, true]));
+final Enumeration<bool> bools = Enumeration(() => Stream.fromIterable([false, true]));
 

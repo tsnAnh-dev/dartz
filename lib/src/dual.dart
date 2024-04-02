@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 class DualSemigroup<A> extends Semigroup<A> {
@@ -10,7 +8,7 @@ class DualSemigroup<A> extends Semigroup<A> {
   @override A append(A a1, A a2) => _aSemigroup.append(a2, a1);
 }
 
-Semigroup<A> dualSemigroup<A>(Semigroup<A> si) => new DualSemigroup(si);
+Semigroup<A> dualSemigroup<A>(Semigroup<A> si) => DualSemigroup(si);
 
 class DualMonoid<A> extends Monoid<A> {
   final Monoid<A> _aMonoid;
@@ -22,4 +20,4 @@ class DualMonoid<A> extends Monoid<A> {
   @override A append(A a1, A a2) => _aMonoid.append(a2, a1);
 }
 
-Monoid<A> dualMonoid<A>(Monoid<A> mi) => new DualMonoid(mi);
+Monoid<A> dualMonoid<A>(Monoid<A> mi) => DualMonoid(mi);

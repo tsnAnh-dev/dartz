@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 Trampoline<bool> even(int n) => n == 0 ? treturn(true) : tcall(() => odd(n-1));

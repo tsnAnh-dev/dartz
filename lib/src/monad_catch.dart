@@ -1,8 +1,6 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class MonadCatch<F> implements Monad<F> {
+abstract mixin class MonadCatch<F> implements Monad<F> {
   F attempt<A>(F fa); // F<A> => F<Either<Object, A>>
   F fail<A>(Object err); // Object => F<A>
 }

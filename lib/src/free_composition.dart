@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 class FreeOps<F, O> {
@@ -33,8 +31,8 @@ class RightFreeComposer<RR, L, R> extends FreeComposer<Either<L, R>, RR> {
 Function1<Either<L, R>, O> composeInterpreters<L, R, O>(O lInterpreter(L l), O rInterpreter(R r)) => (Either<L, R> op) => op.fold(lInterpreter, rInterpreter);
 
 class Free2<First, Second> {
-  final FreeComposer<Either<First, Second>, First> firstComposer = new LeftFreeComposer(new IdFreeComposer());
-  final FreeComposer<Either<First, Second>, Second> secondComposer = new RightFreeComposer(new IdFreeComposer());
+  final FreeComposer<Either<First, Second>, First> firstComposer = LeftFreeComposer(IdFreeComposer());
+  final FreeComposer<Either<First, Second>, Second> secondComposer = RightFreeComposer(IdFreeComposer());
 
   Free<Either<First, Second>, A> liftFirst<A>(Free<First, A> first) => first.foldMap(FreeM, firstComposer.lift);
   Free<Either<First, Second>, A> liftSecond<A>(Free<Second, A> second) => second.foldMap(FreeM, secondComposer.lift);
@@ -46,9 +44,9 @@ class Free2<First, Second> {
 }
 
 class Free3<First, Second, Third> {
-  final FreeComposer<Either<Either<First, Second>, Third>, First> firstComposer = new LeftFreeComposer(new LeftFreeComposer(new IdFreeComposer<First>()));
-  final FreeComposer<Either<Either<First, Second>, Third>, Second> secondComposer = new LeftFreeComposer(new RightFreeComposer(new IdFreeComposer<Second>()));
-  final FreeComposer<Either<Either<First, Second>, Third>, Third> thirdComposer = new RightFreeComposer(new IdFreeComposer<Third>());
+  final FreeComposer<Either<Either<First, Second>, Third>, First> firstComposer = LeftFreeComposer(LeftFreeComposer(IdFreeComposer<First>()));
+  final FreeComposer<Either<Either<First, Second>, Third>, Second> secondComposer = LeftFreeComposer(RightFreeComposer(IdFreeComposer<Second>()));
+  final FreeComposer<Either<Either<First, Second>, Third>, Third> thirdComposer = RightFreeComposer(IdFreeComposer<Third>());
 
   Free<Either<Either<First, Second>, Third>, A> liftFirst<A>(Free<First, A> first) => first.foldMap(FreeM, firstComposer.lift);
   Free<Either<Either<First, Second>, Third>, A> liftSecond<A>(Free<Second, A> second) => second.foldMap(FreeM, secondComposer.lift);

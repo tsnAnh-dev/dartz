@@ -1,8 +1,6 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class IOOp<A> {}
+sealed class IOOp<A> {}
 
 class Readln extends IOOp<String> {}
 
@@ -73,41 +71,41 @@ class Gather<A> extends IOOp<IList<A>> {
 }
 
 class IOMonad extends FreeMonad<IOOp> implements MonadCatch<Free<IOOp, dynamic>> {
-  @override Free<IOOp, A> pure<A>(A a) => new Pure(a);
-  @override Free<IOOp, Either<Object, A>> attempt<A>(covariant Free<IOOp, A> fa) => liftF(new Attempt(fa));
-  @override Free<IOOp, A> fail<A>(Object err) => liftF(new Fail(err));
+  @override Free<IOOp, A> pure<A>(A a) => Pure(a);
+  @override Free<IOOp, Either<Object, A>> attempt<A>(covariant Free<IOOp, A> fa) => liftF(Attempt(fa));
+  @override Free<IOOp, A> fail<A>(Object err) => liftF(Fail(err));
   // appease the twisted type system (issue #18)
   @override Free<IOOp, B> bind<A, B>(Free<IOOp, A> fa, Function1<A, Free<IOOp, B>> f) => super.bind(fa, f);
 }
 
-final IOMonad IOM = new IOMonad();
+final IOMonad IOM = IOMonad();
 final MonadCatch<Free<IOOp, dynamic>> IOMC = IOM;
 MonadCatch<Free<IOOp, A>> iomc<A>() => cast(IOMC);
 
 class IOOps<F> extends FreeOps<F, IOOp> {
   IOOps(FreeComposer<F, IOOp> composer) : super(composer);
 
-  Free<F, String?> readln() => liftOp(new Readln());
+  Free<F, String?> readln() => liftOp(Readln());
 
-  Free<F, Unit> println(String s) => liftOp(new Println(s));
+  Free<F, Unit> println(String s) => liftOp(Println(s));
 
-  Free<F, FileRef> openFile(String path, bool openForRead) => liftOp(new OpenFile(path, openForRead));
+  Free<F, FileRef> openFile(String path, bool openForRead) => liftOp(OpenFile(path, openForRead));
 
-  Free<F, UnmodifiableListView<int>> readBytes(FileRef file, int byteCount) => liftOp(new ReadBytes(file, byteCount));
+  Free<F, UnmodifiableListView<int>> readBytes(FileRef file, int byteCount) => liftOp(ReadBytes(file, byteCount));
 
-  Free<F, Unit> writeBytes(FileRef file, IList<int> bytes) => liftOp(new WriteBytes(file, bytes));
+  Free<F, Unit> writeBytes(FileRef file, IList<int> bytes) => liftOp(WriteBytes(file, bytes));
 
-  Free<F, Unit> closeFile(FileRef file) => liftOp(new CloseFile(file));
+  Free<F, Unit> closeFile(FileRef file) => liftOp(CloseFile(file));
 
-  Free<F, ExecutionResult> execute(String command, IList<String> arguments) => liftOp(new Execute(command, arguments));
+  Free<F, ExecutionResult> execute(String command, IList<String> arguments) => liftOp(Execute(command, arguments));
 
-  Free<F, A> delay<A>(Duration duration, Free<IOOp, A> a) => liftOp(new Delay(duration, a));
+  Free<F, A> delay<A>(Duration duration, Free<IOOp, A> a) => liftOp(Delay(duration, a));
 
-  Free<F, Either<Object, A>> attempt<A>(Free<IOOp, A> fa) => liftOp(new Attempt(fa));
+  Free<F, Either<Object, A>> attempt<A>(Free<IOOp, A> fa) => liftOp(Attempt(fa));
 
-  Free<F, A> fail<A>(Object failure) => liftOp(new Fail(failure));
+  Free<F, A> fail<A>(Object failure) => liftOp(Fail(failure));
 
-  Free<F, IList<A>> gather<A>(IList<Free<IOOp, A>> ops) => liftOp(new Gather(ops, (l) => l.map((e) => cast<A>(e))));
+  Free<F, IList<A>> gather<A>(IList<Free<IOOp, A>> ops) => liftOp(Gather(ops, (l) => l.map((e) => cast<A>(e))));
 }
 
-final io = new IOOps<IOOp>(new IdFreeComposer());
+final io = IOOps<IOOp>(IdFreeComposer());

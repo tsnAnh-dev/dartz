@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 class IVector<A> implements TraversableMonadPlusOps<IVector, A> {
@@ -9,35 +7,35 @@ class IVector<A> implements TraversableMonadPlusOps<IVector, A> {
 
   IVector._internal(this._elementsByIndex, this._offset, this._length);
 
-  factory IVector.emptyVector() => new IVector._internal(new IMap.empty(IntOrder), 0, 0);
+  factory IVector.emptyVector() => IVector._internal(IMap.empty(IntOrder), 0, 0);
 
   factory IVector.from(Iterable<A> iterable) => iterable.fold(emptyVector(), (p, a) => p.appendElement(a));
 
-  IVector<A> prependElement(A a) => new IVector._internal(_elementsByIndex.put(_offset-1, a), _offset-1, _length+1);
+  IVector<A> prependElement(A a) => IVector._internal(_elementsByIndex.put(_offset-1, a), _offset-1, _length+1);
 
-  IVector<A> appendElement(A a) => new IVector._internal(_elementsByIndex.put(_offset+_length, a), _offset, _length+1);
+  IVector<A> appendElement(A a) => IVector._internal(_elementsByIndex.put(_offset+_length, a), _offset, _length+1);
 
-  Option<Tuple2<A, IVector<A>>> removeFirst() => get(0).map((first) => tuple2(first, new IVector._internal(_elementsByIndex.remove(_offset), _offset+1, _length-1)));
+  Option<Tuple2<A, IVector<A>>> removeFirst() => get(0).map((first) => tuple2(first, IVector._internal(_elementsByIndex.remove(_offset), _offset+1, _length-1)));
 
-  IVector<A> dropFirst() => _length == 0 ? this : new IVector._internal(_elementsByIndex.remove(_offset), _offset+1, _length-1);
+  IVector<A> dropFirst() => _length == 0 ? this : IVector._internal(_elementsByIndex.remove(_offset), _offset+1, _length-1);
 
-  Option<Tuple2<A, IVector<A>>> removeLast() => get(_length-1).map((last) => tuple2(last, new IVector._internal(_elementsByIndex.remove(_offset+(_length-1)), _offset, _length-1)));
+  Option<Tuple2<A, IVector<A>>> removeLast() => get(_length-1).map((last) => tuple2(last, IVector._internal(_elementsByIndex.remove(_offset+(_length-1)), _offset, _length-1)));
 
-  IVector<A> dropLast() => _length == 0 ? this : new IVector._internal(_elementsByIndex.remove(_offset+(_length-1)), _offset, _length-1);
+  IVector<A> dropLast() => _length == 0 ? this : IVector._internal(_elementsByIndex.remove(_offset+(_length-1)), _offset, _length-1);
 
   Option<A> get(int index) => _elementsByIndex.get(_offset+index);
 
   Option<A> operator [](int i) => get(i);
 
-  Option<IVector<A>> set(int index, A a) => _elementsByIndex.set(_offset+index, a).map((newElements) => new IVector._internal(newElements, _offset, _length));
+  Option<IVector<A>> set(int index, A a) => _elementsByIndex.set(_offset+index, a).map((newElements) => IVector._internal(newElements, _offset, _length));
 
-  IVector<A> setIfPresent(int index, A a) => new IVector._internal(_elementsByIndex.setIfPresent(_offset+index, a), _offset, _length);
+  IVector<A> setIfPresent(int index, A a) => IVector._internal(_elementsByIndex.setIfPresent(_offset+index, a), _offset, _length);
 
   IVector<B> pure<B>(B b) => emptyVector<B>().appendElement(b);
 
-  @override IVector<B> map<B>(B f(A a)) => new IVector._internal(_elementsByIndex.map(f), _offset, _length);
+  @override IVector<B> map<B>(B f(A a)) => IVector._internal(_elementsByIndex.map(f), _offset, _length);
 
-  @override IVector<B> mapWithIndex<B>(B f(int i, A a)) => new IVector._internal(_elementsByIndex.mapWithKey((i, a) => f(i-_offset, a)), _offset, _length);
+  @override IVector<B> mapWithIndex<B>(B f(int i, A a)) => IVector._internal(_elementsByIndex.mapWithKey((i, a) => f(i-_offset, a)), _offset, _length);
 
   @override IVector<B> bind<B>(Function1<A, IVector<B>> f) => foldLeft(emptyVector(), (p, a) => p.plus(f(a)));
 
@@ -70,11 +68,11 @@ class IVector<A> implements TraversableMonadPlusOps<IVector, A> {
         (prev, a) => prev.fold(left, (p) => f(a).fold(left, (b) => right(p.appendElement(b)))));
 
   Future<IVector<B>> traverseFuture<B>(Future<B> f(A a)) =>
-    _elementsByIndex.foldLeft(new Future.microtask(emptyVector),
+    _elementsByIndex.foldLeft(Future.microtask(emptyVector),
         (prev, a) => prev.then((p) => f(a).then((b) => p.appendElement(b))));
 
   State<S, IVector<B>> traverseState<S, B>(State<S, B> f(A a)) =>
-    _elementsByIndex.foldLeft(new State((s) => tuple2(emptyVector(), s)), (prev, a) => prev.flatMap((p) => f(a).map((b) => p.appendElement(b))));
+    _elementsByIndex.foldLeft(State((s) => tuple2(emptyVector(), s)), (prev, a) => prev.flatMap((p) => f(a).map((b) => p.appendElement(b))));
 
   static Option<IVector<A>> sequenceOption<A>(IVector<Option<A>> voa) => voa.traverseOption(id);
 
@@ -147,7 +145,7 @@ class IVector<A> implements TraversableMonadPlusOps<IVector, A> {
   @override Option<A> concatenateO(Semigroup<A> si) => foldMapO(si, id); // TODO: optimize
 
   @override Option<B> foldMapO<B>(Semigroup<B> si, B f(A a)) =>
-    foldMap(new OptionMonoid(si), composeF(some, f)); // TODO: optimize
+    foldMap(OptionMonoid(si), composeF(some, f)); // TODO: optimize
 
   @override A intercalate(Monoid<A> mi, A a) =>
     foldRight(none<A>(), (A ca, Option<A> oa) => some(mi.append(ca, oa.fold(mi.zero, mi.appendC(a))))) | mi.zero(); // TODO: optimize
@@ -176,18 +174,18 @@ class IVector<A> implements TraversableMonadPlusOps<IVector, A> {
   void forEach(void sideEffect(A a)) => foldLeft(null, (_, a) => sideEffect(a));
 }
 
-IVector<A> ivector<A>(Iterable<A> iterable) => new IVector.from(iterable);
+IVector<A> ivector<A>(Iterable<A> iterable) => IVector.from(iterable);
 
-IVector<A> emptyVector<A>() => new IVector.emptyVector();
+IVector<A> emptyVector<A>() => IVector.emptyVector();
 
-final MonadPlus<IVector> IVectorMP = new MonadPlusOpsMonadPlus<IVector>((a) => emptyVector().appendElement(a), emptyVector);
+final MonadPlus<IVector> IVectorMP = MonadPlusOpsMonadPlus<IVector>((a) => emptyVector().appendElement(a), emptyVector);
 MonadPlus<IVector<A>> ivectorMP<A>() => cast(IVectorMP);
-final Traversable<IVector> IVectorTr = new TraversableOpsTraversable<IVector>();
+final Traversable<IVector> IVectorTr = TraversableOpsTraversable<IVector>();
 
 class IVectorMonoid<A> extends Monoid<IVector<A>> {
   @override IVector<A> zero() => emptyVector();
   @override IVector<A> append(IVector<A> a1, IVector<A> a2) => a1.plus(a2);
 }
 
-final Monoid<IVector> IVectorMi = new IVectorMonoid();
-Monoid<IVector<A>> ivectorMi<A>() => new IVectorMonoid();
+final Monoid<IVector> IVectorMi = IVectorMonoid();
+Monoid<IVector<A>> ivectorMi<A>() => IVectorMonoid();

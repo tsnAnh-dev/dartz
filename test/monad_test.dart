@@ -1,5 +1,5 @@
 //import 'package:test/test.dart';
-//import 'package:dartz/dartz.dart';
+//import 'package:dart3z/dartz.dart';
 //import 'laws.dart';
 
 void main() {

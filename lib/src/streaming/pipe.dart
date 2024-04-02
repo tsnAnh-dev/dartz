@@ -1,17 +1,15 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz_streaming;
 
 class From<A> {}
 
 class Pipe {
-  //static final From _get = new From();
+  //static final From _get = From();
 
   static Conveyor<From<I>, O> produce<I, O>(O h, [Conveyor<From<I>, O>? t]) =>
       Conveyor.produce(h, t);
 
   static Conveyor<From<I>, O> consume<I, O>(Function1<I, Conveyor<From<I>, O>> recv, [Function0<Conveyor<From<I>, O>>? fallback]) =>
-      Conveyor.consume(new From(), (Either<Object, I> ea) => ea.fold(
+      Conveyor.consume(From(), (Either<Object, I> ea) => ea.fold(
           (err) => err == Conveyor.End ? (fallback == null ? halt() : fallback()) : Conveyor.halt(err)
           ,(I i) => Conveyor.Try(() => recv(i))));
 

@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz_streaming;
 
 class Nowhere {}
@@ -31,9 +29,9 @@ class Source {
   //static Conveyor<Nowhere, O> fromIList<F, O>(IList<O> v) => fromFoldable(v, IListTr);
   //static IList<O> toIList<O>(Conveyor<Nowhere, O> s) => cast(materialize(s, IListMP));
 
-  static Conveyor<Task, A> fromStream<A>(Stream<A> s()) => Source.resource(Task.delay(() => new StreamIterator(s())),
-      (StreamIterator<A> it) => Source.eval<Task, bool>(new Task(it.moveNext)).repeat().takeWhile(id).flatMap((_) => Source.eval(Task.delay(() => it.current))),
-      (StreamIterator<A> it) => Source.eval_(new Task(() => new Future.value(unit).then((_) => it.cancel()))));
+  static Conveyor<Task, A> fromStream<A>(Stream<A> s()) => Source.resource(Task.delay(() => StreamIterator(s())),
+      (StreamIterator<A> it) => Source.eval<Task, bool>(Task(it.moveNext)).repeat().takeWhile(id).flatMap((_) => Source.eval(Task.delay(() => it.current))),
+      (StreamIterator<A> it) => Source.eval_(Task(() => Future.value(unit).then((_) => it.cancel()))));
 
   static Conveyor<F, O> pure<F, O>(Monad<F> monad, O o) => eval(monad.pure(o));
 

@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 //import 'enumerators_stubs.dart';
 //import 'package:enumerators/combinators.dart' as c;
 import 'combinators_stubs.dart' as c;
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 void main() {
@@ -41,19 +41,19 @@ void main() {
     expect(Option.unless(true, 42), none());
   });
 
-  group("OptionM", () => checkMonadLaws(new OptionMonadPlus()));
+  group("OptionM", () => checkMonadLaws(OptionMonadPlus()));
 
   //group("OptionTMonad+Id", () => checkMonadLaws(optionTMonad(IdM)));
 
   //group("OptionTMonad+IList", () => checkMonadLaws(optionTMonad(IListMP)));
 
-  group("OptionM+Foldable", () => checkFoldableMonadLaws(new OptionTraversable(), new OptionMonadPlus()));
+  group("OptionM+Foldable", () => checkFoldableMonadLaws(OptionTraversable(), OptionMonadPlus()));
 
-  group("OptionMi", () => checkMonoidLaws(new OptionMonoid(NumSumMi), c.ints.map(some)));
+  group("OptionMi", () => checkMonoidLaws(OptionMonoid(NumSumMi), c.ints.map(some)));
 
   final intOptions = c.ints.map((i) => i%2==0 ? some(i) : none<int>());
 
-  group("OptionTr", () => checkTraversableLaws(new OptionTraversable(), intOptions));
+  group("OptionTr", () => checkTraversableLaws(OptionTraversable(), intOptions));
 
   group("Option FoldableOps", () => checkFoldableOpsProperties(intOptions));
 
@@ -64,7 +64,7 @@ void main() {
 
   group("Some", () {
     test("value", () {
-      final some = new Some(2);
+      final some = Some(2);
       expect(some.value, 2);
     });
   });

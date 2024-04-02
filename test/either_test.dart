@@ -3,7 +3,7 @@ import 'enumerators_stubs.dart';
 import 'package:test/test.dart';
 //import 'package:enumerators/combinators.dart' as c;
 import 'combinators_stubs.dart' as c;
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 //import 'dart:async';
 import 'laws.dart';
 
@@ -30,9 +30,9 @@ void main() {
 /*
   test("transformer demo", () async {
     final M = eitherTMonad(listTMonad(FutureM)) as Monad<Future<List<Either>>>;
-    final stacked = M.map(M.bind(M.map(new Future.sync(() => [right("a"), left("b"), right("c")]),
+    final stacked = M.map(M.bind(M.map(Future.sync(() => [right("a"), left("b"), right("c")]),
         (x) => x + "!"),
-        (x) => new Future.delayed(new Duration(seconds: 1), () => [right(x), right(x)])),
+        (x) => Future.delayed(Duration(seconds: 1), () => [right(x), right(x)])),
         (x) => x.toUpperCase());
 
     expect(await stacked, [right("A!"), right("A!"), left("b"), right("C!"), right("C!")]);
@@ -92,14 +92,14 @@ void main() {
 
   group("Left", () {
     test("value", () {
-      final left = new Left(2);
+      final left = Left(2);
       expect(left.value, 2);
     });
   });
 
   group("Right", () {
     test("value", () {
-      final right = new Right(2);
+      final right = Right(2);
       expect(right.value, 2);
     });
   });

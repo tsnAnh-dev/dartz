@@ -1,11 +1,10 @@
-name: dartz
-version: 0.10.1
-homepage: https://github.com/spebbe/dartz
-description: Functional Programming in Dart. Purify your Dart code using efficient immutable data structures, monads, lenses and other FP tools.
-author: Björn Sperber <spebbe@gmail.com>
+name: dart3z
+version: 0.11.1
+homepage: https://github.com/tsnAnh-dev/dartz
+description: A fork of dartz. Functional Programming in Dart. Purify your Dart code using efficient immutable data structures, monads, lenses and other FP tools.
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dev_dependencies:
   test: ">=1.17.1"

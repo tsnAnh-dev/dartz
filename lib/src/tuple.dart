@@ -1,14 +1,12 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-class Tuple2<T1, T2> {
+final class Tuple2<T1, T2> {
   final T1 value1;
   final T2 value2;
 
   R apply<R>(Function2<T1, T2, R> f) => f(value1, value2);
-  Tuple2<NT1, T2> map1<NT1>(Function1<T1, NT1> f) => new Tuple2(f(value1), value2);
-  Tuple2<T1, NT2> map2<NT2>(Function1<T2, NT2> f) => new Tuple2(value1, f(value2));
+  Tuple2<NT1, T2> map1<NT1>(Function1<T1, NT1> f) => Tuple2(f(value1), value2);
+  Tuple2<T1, NT2> map2<NT2>(Function1<T2, NT2> f) => Tuple2(value1, f(value2));
 
 //<editor-fold desc="Data Methods" defaultstate="collapsed">
 
@@ -42,7 +40,7 @@ class Tuple2<T1, T2> {
     T1? value1,
     T2? value2,
   }) {
-    return new Tuple2(
+    return Tuple2(
       value1 ?? this.value1,
       value2 ?? this.value2,
     );
@@ -56,7 +54,7 @@ class Tuple2<T1, T2> {
   }
 
   factory Tuple2.fromMap(Map<String, dynamic> map) {
-    return new Tuple2(
+    return Tuple2(
       map['value1'] as T1,
       map['value2'] as T2,
     );
@@ -65,33 +63,33 @@ class Tuple2<T1, T2> {
 //</editor-fold>
 }
 
-class Tuple2Semigroup<T1, T2> extends Semigroup<Tuple2<T1, T2>> {
+final class Tuple2Semigroup<T1, T2> extends Semigroup<Tuple2<T1, T2>> {
   final Semigroup<T1> _value1Semigroup;
   final Semigroup<T2> _value2Semigroup;
 
   Tuple2Semigroup(this._value1Semigroup, this._value2Semigroup);
 
   @override Tuple2<T1, T2> append(Tuple2<T1, T2> t1, Tuple2<T1, T2> t2) =>
-      new Tuple2<T1, T2>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2));
+      Tuple2<T1, T2>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2));
 }
 
-Semigroup<Tuple2<T1, T2>> tuple2Semigroup<T1, T2>(Semigroup<T1> value1Semigroup, Semigroup<T2> value2Semigroup) => new Tuple2Semigroup(value1Semigroup, value2Semigroup);
+Semigroup<Tuple2<T1, T2>> tuple2Semigroup<T1, T2>(Semigroup<T1> value1Semigroup, Semigroup<T2> value2Semigroup) => Tuple2Semigroup(value1Semigroup, value2Semigroup);
 
-class Tuple2Monoid<T1, T2> extends Monoid<Tuple2<T1, T2>> {
+final class Tuple2Monoid<T1, T2> extends Monoid<Tuple2<T1, T2>> {
   final Monoid<T1> _value1Monoid;
   final Monoid<T2> _value2Monoid;
 
   Tuple2Monoid(this._value1Monoid, this._value2Monoid);
 
   @override Tuple2<T1, T2> append(Tuple2<T1, T2> t1, Tuple2<T1, T2> t2) =>
-      new Tuple2<T1, T2>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2));
+      Tuple2<T1, T2>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2));
 
-  @override Tuple2<T1, T2> zero() => new Tuple2<T1, T2>(_value1Monoid.zero(), _value2Monoid.zero());
+  @override Tuple2<T1, T2> zero() => Tuple2<T1, T2>(_value1Monoid.zero(), _value2Monoid.zero());
 }
 
-Monoid<Tuple2<T1, T2>> tuple2Monoid<T1, T2>(Monoid<T1> value1Monoid, Monoid<T2> value2Monoid) => new Tuple2Monoid(value1Monoid, value2Monoid);
+Monoid<Tuple2<T1, T2>> tuple2Monoid<T1, T2>(Monoid<T1> value1Monoid, Monoid<T2> value2Monoid) => Tuple2Monoid(value1Monoid, value2Monoid);
 
-class Tuple3<T1, T2, T3> {
+final class Tuple3<T1, T2, T3> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -133,7 +131,7 @@ class Tuple3<T1, T2, T3> {
     T2? value2,
     T3? value3,
   }) {
-    return new Tuple3(
+    return Tuple3(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -149,7 +147,7 @@ class Tuple3<T1, T2, T3> {
   }
 
   factory Tuple3.fromMap(Map<String, dynamic> map) {
-    return new Tuple3(
+    return Tuple3(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -159,7 +157,7 @@ class Tuple3<T1, T2, T3> {
 //</editor-fold>
 }
 
-class Tuple3Semigroup<T1, T2, T3> extends Semigroup<Tuple3<T1, T2, T3>> {
+final class Tuple3Semigroup<T1, T2, T3> extends Semigroup<Tuple3<T1, T2, T3>> {
   final Semigroup<T1> _value1Semigroup;
   final Semigroup<T2> _value2Semigroup;
   final Semigroup<T3> _value3Semigroup;
@@ -167,12 +165,12 @@ class Tuple3Semigroup<T1, T2, T3> extends Semigroup<Tuple3<T1, T2, T3>> {
   Tuple3Semigroup(this._value1Semigroup, this._value2Semigroup, this._value3Semigroup);
 
   @override Tuple3<T1, T2, T3> append(Tuple3<T1, T2, T3> t1, Tuple3<T1, T2, T3> t2) =>
-      new Tuple3<T1, T2, T3>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2), _value3Semigroup.append(t1.value3, t2.value3));
+      Tuple3<T1, T2, T3>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2), _value3Semigroup.append(t1.value3, t2.value3));
 }
 
-Semigroup<Tuple3<T1, T2, T3>> tuple3Semigroup<T1, T2, T3>(Semigroup<T1> value1Semigroup, Semigroup<T2> value2Semigroup, Semigroup<T3> value3Semigroup) => new Tuple3Semigroup(value1Semigroup, value2Semigroup, value3Semigroup);
+Semigroup<Tuple3<T1, T2, T3>> tuple3Semigroup<T1, T2, T3>(Semigroup<T1> value1Semigroup, Semigroup<T2> value2Semigroup, Semigroup<T3> value3Semigroup) => Tuple3Semigroup(value1Semigroup, value2Semigroup, value3Semigroup);
 
-class Tuple3Monoid<T1, T2, T3> extends Monoid<Tuple3<T1, T2, T3>> {
+final class Tuple3Monoid<T1, T2, T3> extends Monoid<Tuple3<T1, T2, T3>> {
   final Monoid<T1> _value1Monoid;
   final Monoid<T2> _value2Monoid;
   final Monoid<T3> _value3Monoid;
@@ -180,15 +178,15 @@ class Tuple3Monoid<T1, T2, T3> extends Monoid<Tuple3<T1, T2, T3>> {
   Tuple3Monoid(this._value1Monoid, this._value2Monoid, this._value3Monoid);
 
   @override Tuple3<T1, T2, T3> append(Tuple3<T1, T2, T3> t1, Tuple3<T1, T2, T3> t2) =>
-      new Tuple3<T1, T2, T3>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2), _value3Monoid.append(t1.value3, t2.value3));
+      Tuple3<T1, T2, T3>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2), _value3Monoid.append(t1.value3, t2.value3));
 
-  @override Tuple3<T1, T2, T3> zero() => new Tuple3<T1, T2, T3>(_value1Monoid.zero(), _value2Monoid.zero(), _value3Monoid.zero());
+  @override Tuple3<T1, T2, T3> zero() => Tuple3<T1, T2, T3>(_value1Monoid.zero(), _value2Monoid.zero(), _value3Monoid.zero());
 }
 
-Monoid<Tuple3<T1, T2, T3>> tuple3Monoid<T1, T2, T3>(Monoid<T1> value1Monoid, Monoid<T2> value2Monoid, Monoid<T3> value3Monoid) => new Tuple3Monoid(value1Monoid, value2Monoid, value3Monoid);
+Monoid<Tuple3<T1, T2, T3>> tuple3Monoid<T1, T2, T3>(Monoid<T1> value1Monoid, Monoid<T2> value2Monoid, Monoid<T3> value3Monoid) => Tuple3Monoid(value1Monoid, value2Monoid, value3Monoid);
 
 
-class Tuple4<T1, T2, T3, T4> {
+final class Tuple4<T1, T2, T3, T4> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -239,7 +237,7 @@ class Tuple4<T1, T2, T3, T4> {
     T3? value3,
     T4? value4,
   }) {
-    return new Tuple4(
+    return Tuple4(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -257,7 +255,7 @@ class Tuple4<T1, T2, T3, T4> {
   }
 
   factory Tuple4.fromMap(Map<String, dynamic> map) {
-    return new Tuple4(
+    return Tuple4(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -268,7 +266,7 @@ class Tuple4<T1, T2, T3, T4> {
 //</editor-fold>
 }
 
-class Tuple4Semigroup<T1, T2, T3, T4> extends Semigroup<Tuple4<T1, T2, T3, T4>> {
+final class Tuple4Semigroup<T1, T2, T3, T4> extends Semigroup<Tuple4<T1, T2, T3, T4>> {
   final Semigroup<T1> _value1Semigroup;
   final Semigroup<T2> _value2Semigroup;
   final Semigroup<T3> _value3Semigroup;
@@ -277,13 +275,13 @@ class Tuple4Semigroup<T1, T2, T3, T4> extends Semigroup<Tuple4<T1, T2, T3, T4>> 
   Tuple4Semigroup(this._value1Semigroup, this._value2Semigroup, this._value3Semigroup, this._value4Semigroup);
 
   @override Tuple4<T1, T2, T3, T4> append(Tuple4<T1, T2, T3, T4> t1, Tuple4<T1, T2, T3, T4> t2) =>
-      new Tuple4<T1, T2, T3, T4>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2), _value3Semigroup.append(t1.value3, t2.value3), _value4Semigroup.append(t1.value4, t2.value4));
+      Tuple4<T1, T2, T3, T4>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2), _value3Semigroup.append(t1.value3, t2.value3), _value4Semigroup.append(t1.value4, t2.value4));
 }
 
-Semigroup<Tuple4<T1, T2, T3, T4>> tuple4Semigroup<T1, T2, T3, T4>(Semigroup<T1> value1Semigroup, Semigroup<T2> value2Semigroup, Semigroup<T3> value3Semigroup, Semigroup<T4> value4Semigroup) => new Tuple4Semigroup(value1Semigroup, value2Semigroup, value3Semigroup, value4Semigroup);
+Semigroup<Tuple4<T1, T2, T3, T4>> tuple4Semigroup<T1, T2, T3, T4>(Semigroup<T1> value1Semigroup, Semigroup<T2> value2Semigroup, Semigroup<T3> value3Semigroup, Semigroup<T4> value4Semigroup) => Tuple4Semigroup(value1Semigroup, value2Semigroup, value3Semigroup, value4Semigroup);
 
 
-class Tuple4Monoid<T1, T2, T3, T4> extends Monoid<Tuple4<T1, T2, T3, T4>> {
+final class Tuple4Monoid<T1, T2, T3, T4> extends Monoid<Tuple4<T1, T2, T3, T4>> {
   final Monoid<T1> _value1Monoid;
   final Monoid<T2> _value2Monoid;
   final Monoid<T3> _value3Monoid;
@@ -292,14 +290,14 @@ class Tuple4Monoid<T1, T2, T3, T4> extends Monoid<Tuple4<T1, T2, T3, T4>> {
   Tuple4Monoid(this._value1Monoid, this._value2Monoid, this._value3Monoid, this._value4Monoid);
 
   @override Tuple4<T1, T2, T3, T4> append(Tuple4<T1, T2, T3, T4> t1, Tuple4<T1, T2, T3, T4> t2) =>
-      new Tuple4<T1, T2, T3, T4>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2), _value3Monoid.append(t1.value3, t2.value3), _value4Monoid.append(t1.value4, t2.value4));
+      Tuple4<T1, T2, T3, T4>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2), _value3Monoid.append(t1.value3, t2.value3), _value4Monoid.append(t1.value4, t2.value4));
 
-  @override Tuple4<T1, T2, T3, T4> zero() => new Tuple4<T1, T2, T3, T4>(_value1Monoid.zero(), _value2Monoid.zero(), _value3Monoid.zero(), _value4Monoid.zero());
+  @override Tuple4<T1, T2, T3, T4> zero() => Tuple4<T1, T2, T3, T4>(_value1Monoid.zero(), _value2Monoid.zero(), _value3Monoid.zero(), _value4Monoid.zero());
 }
 
-Monoid<Tuple4<T1, T2, T3, T4>> tuple4Monoid<T1, T2, T3, T4>(Monoid<T1> value1Monoid, Monoid<T2> value2Monoid, Monoid<T3> value3Monoid, Monoid<T4> value4Monoid) => new Tuple4Monoid(value1Monoid, value2Monoid, value3Monoid, value4Monoid);
+Monoid<Tuple4<T1, T2, T3, T4>> tuple4Monoid<T1, T2, T3, T4>(Monoid<T1> value1Monoid, Monoid<T2> value2Monoid, Monoid<T3> value3Monoid, Monoid<T4> value4Monoid) => Tuple4Monoid(value1Monoid, value2Monoid, value3Monoid, value4Monoid);
 
-class Tuple5<T1, T2, T3, T4, T5> {
+final class Tuple5<T1, T2, T3, T4, T5> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -356,7 +354,7 @@ class Tuple5<T1, T2, T3, T4, T5> {
     T4? value4,
     T5? value5,
   }) {
-    return new Tuple5(
+    return Tuple5(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -376,7 +374,7 @@ class Tuple5<T1, T2, T3, T4, T5> {
   }
 
   factory Tuple5.fromMap(Map<String, dynamic> map) {
-    return new Tuple5(
+    return Tuple5(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -388,7 +386,7 @@ class Tuple5<T1, T2, T3, T4, T5> {
 //</editor-fold>
 }
 
-class Tuple6<T1, T2, T3, T4, T5, T6> {
+final class Tuple6<T1, T2, T3, T4, T5, T6> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -450,7 +448,7 @@ class Tuple6<T1, T2, T3, T4, T5, T6> {
     T5? value5,
     T6? value6,
   }) {
-    return new Tuple6(
+    return Tuple6(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -472,7 +470,7 @@ class Tuple6<T1, T2, T3, T4, T5, T6> {
   }
 
   factory Tuple6.fromMap(Map<String, dynamic> map) {
-    return new Tuple6(
+    return Tuple6(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -485,7 +483,7 @@ class Tuple6<T1, T2, T3, T4, T5, T6> {
 //</editor-fold>
 }
 
-class Tuple7<T1, T2, T3, T4, T5, T6, T7> {
+final class Tuple7<T1, T2, T3, T4, T5, T6, T7> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -552,7 +550,7 @@ class Tuple7<T1, T2, T3, T4, T5, T6, T7> {
     T6? value6,
     T7? value7,
   }) {
-    return new Tuple7(
+    return Tuple7(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -576,7 +574,7 @@ class Tuple7<T1, T2, T3, T4, T5, T6, T7> {
   }
 
   factory Tuple7.fromMap(Map<String, dynamic> map) {
-    return new Tuple7(
+    return Tuple7(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -590,7 +588,7 @@ class Tuple7<T1, T2, T3, T4, T5, T6, T7> {
 //</editor-fold>
 }
 
-class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
+final class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -662,7 +660,7 @@ class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
     T7? value7,
     T8? value8,
   }) {
-    return new Tuple8(
+    return Tuple8(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -688,7 +686,7 @@ class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
   }
 
   factory Tuple8.fromMap(Map<String, dynamic> map) {
-    return new Tuple8(
+    return Tuple8(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -703,7 +701,7 @@ class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> {
 //</editor-fold>
 }
 
-class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
+final class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -780,7 +778,7 @@ class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
     T8? value8,
     T9? value9,
   }) {
-    return new Tuple9(
+    return Tuple9(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -808,7 +806,7 @@ class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
   }
 
   factory Tuple9.fromMap(Map<String, dynamic> map) {
-    return new Tuple9(
+    return Tuple9(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -824,7 +822,7 @@ class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> {
 //</editor-fold>
 }
 
-class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> {
+final class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -906,7 +904,7 @@ class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> {
     T9? value9,
     T10? value10,
   }) {
-    return new Tuple10(
+    return Tuple10(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -936,7 +934,7 @@ class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> {
   }
 
   factory Tuple10.fromMap(Map<String, dynamic> map) {
-    return new Tuple10(
+    return Tuple10(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -953,7 +951,7 @@ class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> {
 //</editor-fold>
 }
 
-class Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> {
+final class Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -1040,7 +1038,7 @@ class Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> {
     T10? value10,
     T11? value11,
   }) {
-    return new Tuple11(
+    return Tuple11(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -1072,7 +1070,7 @@ class Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> {
   }
 
   factory Tuple11.fromMap(Map<String, dynamic> map) {
-    return new Tuple11(
+    return Tuple11(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -1090,7 +1088,7 @@ class Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> {
 //</editor-fold>
 }
 
-class Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> {
+final class Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -1182,7 +1180,7 @@ class Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> {
     T11? value11,
     T12? value12,
   }) {
-    return new Tuple12(
+    return Tuple12(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -1216,7 +1214,7 @@ class Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> {
   }
 
   factory Tuple12.fromMap(Map<String, dynamic> map) {
-    return new Tuple12(
+    return Tuple12(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -1235,7 +1233,7 @@ class Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> {
 //</editor-fold>
 }
 
-class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> {
+final class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -1332,7 +1330,7 @@ class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> {
     T12? value12,
     T13? value13,
   }) {
-    return new Tuple13(
+    return Tuple13(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -1368,7 +1366,7 @@ class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> {
   }
 
   factory Tuple13.fromMap(Map<String, dynamic> map) {
-    return new Tuple13(
+    return Tuple13(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -1388,7 +1386,7 @@ class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> {
 //</editor-fold>
 }
 
-class Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> {
+final class Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -1490,7 +1488,7 @@ class Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> {
     T13? value13,
     T14? value14,
   }) {
-    return new Tuple14(
+    return Tuple14(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -1528,7 +1526,7 @@ class Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> {
   }
 
   factory Tuple14.fromMap(Map<String, dynamic> map) {
-    return new Tuple14(
+    return Tuple14(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -1549,7 +1547,7 @@ class Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> {
 //</editor-fold>
 }
 
-class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> {
+final class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -1656,7 +1654,7 @@ class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> 
     T14? value14,
     T15? value15,
   }) {
-    return new Tuple15(
+    return Tuple15(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -1696,7 +1694,7 @@ class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> 
   }
 
   factory Tuple15.fromMap(Map<String, dynamic> map) {
-    return new Tuple15(
+    return Tuple15(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -1718,7 +1716,7 @@ class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> 
 //</editor-fold>
 }
 
-class Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> {
+final class Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -1830,7 +1828,7 @@ class Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
     T15? value15,
     T16? value16,
   }) {
-    return new Tuple16(
+    return Tuple16(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -1872,7 +1870,7 @@ class Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
   }
 
   factory Tuple16.fromMap(Map<String, dynamic> map) {
-    return new Tuple16(
+    return Tuple16(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -1895,7 +1893,7 @@ class Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
 //</editor-fold>
 }
 
-class Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> {
+final class Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -2012,7 +2010,7 @@ class Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
     T16? value16,
     T17? value17,
   }) {
-    return new Tuple17(
+    return Tuple17(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -2056,7 +2054,7 @@ class Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
   }
 
   factory Tuple17.fromMap(Map<String, dynamic> map) {
-    return new Tuple17(
+    return Tuple17(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -2080,7 +2078,7 @@ class Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
 //</editor-fold>
 }
 
-class Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> {
+final class Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -2202,7 +2200,7 @@ class Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
     T17? value17,
     T18? value18,
   }) {
-    return new Tuple18(
+    return Tuple18(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -2248,7 +2246,7 @@ class Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
   }
 
   factory Tuple18.fromMap(Map<String, dynamic> map) {
-    return new Tuple18(
+    return Tuple18(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -2273,7 +2271,7 @@ class Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
 //</editor-fold>
 }
 
-class Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19> {
+final class Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -2400,7 +2398,7 @@ class Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
     T18? value18,
     T19? value19,
   }) {
-    return new Tuple19(
+    return Tuple19(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -2448,7 +2446,7 @@ class Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
   }
 
   factory Tuple19.fromMap(Map<String, dynamic> map) {
-    return new Tuple19(
+    return Tuple19(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -2474,7 +2472,7 @@ class Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
 //</editor-fold>
 }
 
-class Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> {
+final class Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
@@ -2604,7 +2602,7 @@ class Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
     T19? value19,
     T20? value20,
   }) {
-    return new Tuple20(
+    return Tuple20(
       value1 ?? this.value1,
       value2 ?? this.value2,
       value3 ?? this.value3,
@@ -2654,7 +2652,7 @@ class Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
   }
 
   factory Tuple20.fromMap(Map<String, dynamic> map) {
-    return new Tuple20(
+    return Tuple20(
       map['value1'] as T1,
       map['value2'] as T2,
       map['value3'] as T3,
@@ -2683,58 +2681,58 @@ class Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, 
 
 Tuple2<T1, T2>
 tuple2<T1, T2>(T1 v1, T2 v2) =>
-    new Tuple2(v1, v2);
+    Tuple2(v1, v2);
 Tuple3<T1, T2, T3>
 tuple3<T1, T2, T3>(T1 v1, T2 v2, T3 v3) =>
-    new Tuple3(v1, v2, v3);
+    Tuple3(v1, v2, v3);
 Tuple4<T1, T2, T3, T4>
 tuple4<T1, T2, T3, T4>(T1 v1, T2 v2, T3 v3, T4 v4) =>
-    new Tuple4(v1, v2, v3, v4);
+    Tuple4(v1, v2, v3, v4);
 Tuple5<T1, T2, T3, T4, T5>
 tuple5<T1, T2, T3, T4, T5>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5) =>
-    new Tuple5(v1, v2, v3, v4, v5);
+    Tuple5(v1, v2, v3, v4, v5);
 Tuple6<T1, T2, T3, T4, T5, T6>
 tuple6<T1, T2, T3, T4, T5, T6>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6) =>
-    new Tuple6(v1, v2, v3, v4, v5, v6);
+    Tuple6(v1, v2, v3, v4, v5, v6);
 Tuple7<T1, T2, T3, T4, T5, T6, T7>
 tuple7<T1, T2, T3, T4, T5, T6, T7>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7) =>
-    new Tuple7(v1, v2, v3, v4, v5, v6, v7);
+    Tuple7(v1, v2, v3, v4, v5, v6, v7);
 Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>
 tuple8<T1, T2, T3, T4, T5, T6, T7, T8>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8) =>
-    new Tuple8(v1, v2, v3, v4, v5, v6, v7, v8);
+    Tuple8(v1, v2, v3, v4, v5, v6, v7, v8);
 Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>
 tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9) =>
-    new Tuple9(v1, v2, v3, v4, v5, v6, v7, v8, v9);
+    Tuple9(v1, v2, v3, v4, v5, v6, v7, v8, v9);
 Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
 tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10) =>
-    new Tuple10(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+    Tuple10(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
 Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
 tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11) =>
-    new Tuple11(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11);
+    Tuple11(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11);
 Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
 tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12) =>
-    new Tuple12(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
+    Tuple12(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
 tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13) =>
-    new Tuple13(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13);
+    Tuple13(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13);
 Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
 tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14) =>
-    new Tuple14(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14);
+    Tuple14(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14);
 Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>
 tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15) =>
-    new Tuple15(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    Tuple15(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
 Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>
 tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15, T16 v16) =>
-    new Tuple16(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16);
+    Tuple16(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16);
 Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>
 tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15, T16 v16, T17 v17) =>
-    new Tuple17(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17);
+    Tuple17(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17);
 Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>
 tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15, T16 v16, T17 v17, T18 v18) =>
-    new Tuple18(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18);
+    Tuple18(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18);
 Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>
 tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15, T16 v16, T17 v17, T18 v18, T19 v19) =>
-    new Tuple19(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19);
+    Tuple19(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19);
 Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>
 tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15, T16 v16, T17 v17, T18 v18, T19 v19, T20 v20) =>
-    new Tuple20(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20);
+    Tuple20(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20);

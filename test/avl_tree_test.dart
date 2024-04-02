@@ -3,12 +3,12 @@ import 'package:test/test.dart';
 import 'combinators_stubs.dart' as c;
 //import 'package:propcheck/propcheck.dart';
 import 'propcheck_stubs.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'laws.dart';
 
 void main() {
-  final qc = new QuickCheck(maxSize: 300, seed: 42);
-  final intTrees = c.listsOf(c.ints).map((l) =>  new AVLTree.fromIList(NumOrder, ilist(l)));
+  final qc = QuickCheck(maxSize: 300, seed: 42);
+  final intTrees = c.listsOf(c.ints).map((l) =>  AVLTree.fromIList(NumOrder, ilist(l)));
 
   test("min", () {
     qc.check(forall(intTrees,
@@ -21,13 +21,13 @@ void main() {
   });
 
   test("demo", () {
-    final AVLTree<num> t = new AVLTree<num>.fromIList(NumOrder, ilist([5,1,6,7,3,6]));
+    final AVLTree<num> t = AVLTree<num>.fromIList(NumOrder, ilist([5,1,6,7,3,6]));
     expect(t.get(3), some(3));
     expect(t.get(4), none());
     expect(t.toIList(), ilist([1,3,5,6,7]));
   });
 
-  group("AVLTreeMonoid", () => checkMonoidLaws(new AVLTreeMonoid(NumOrder), intTrees));
+  group("AVLTreeMonoid", () => checkMonoidLaws(AVLTreeMonoid(NumOrder), intTrees));
 
   group("AVLTreeFo", () => checkFoldableLaws(AVLTreeFo, intTrees));
 

@@ -1,8 +1,6 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class Applicative<F> implements Functor<F> {
+abstract mixin class Applicative<F> implements Functor<F> {
   F pure<A>(A a);
   F ap<A, B>(F fa, F ff);
 
@@ -34,9 +32,9 @@ abstract class Applicative<F> implements Functor<F> {
 
   F unsafeSequenceL_(List<F> fas) =>  sequenceA_(ListTr, fas);
 
-  F replicate<A>(int n, covariant F fa) => sequenceL(new IList.from(new List.filled(n, fa)));
+  F replicate<A>(int n, covariant F fa) => sequenceL(IList.from(List.filled(n, fa)));
 
-  F replicate_(int n, F fa) => sequenceL_(new IList.from(new List.filled(n, fa)));
+  F replicate_(int n, F fa) => sequenceL_(IList.from(List.filled(n, fa)));
 */
   // Workaround: Dumbing down types in generic liftX to give subclasses a chance to do proper typing...
   //             OMG, it just got worse... not much left of the types since 2.0.0-dev.32.0 :-(
@@ -54,7 +52,7 @@ abstract class Applicative<F> implements Functor<F> {
   F map5<A, A2 extends A, B, B2 extends B, C, C2 extends C, D, D2 extends D, E, E2 extends E, EFF>(covariant F fa, covariant F fb, covariant F fc, covariant F fd, covariant F fe, EFF f(A a, B b, C c, D d, E e)) => cast(lift5(f)(fa, fb, fc, fd, fe));
   F map6<A, A2 extends A, B, B2 extends B, C, C2 extends C, D, D2 extends D, E, E2 extends E, EFF, EFF2 extends EFF, G>(covariant F fa, covariant F fb, covariant F fc, covariant F fd, covariant F fe, covariant F ff, G f(A a, B b, C c, D d, E e, EFF fff)) => cast(lift6(f)(fa, fb, fc, fd, fe, ff));
 */
-  //Applicative<F> /** Applicative<F<G<_>>> **/ composeA(Applicative G) => new ComposedApplicative(this, G);
+  //Applicative<F> /** Applicative<F<G<_>>> **/ composeA(Applicative G) => ComposedApplicative(this, G);
 }
 
 // Compose Applicative<F<_>> with Applicative<G<_>>, yielding Applicative<F<G<_>>>

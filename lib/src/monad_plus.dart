@@ -1,15 +1,13 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class MonadPlus<F> implements Functor<F>, Applicative<F>, Monad<F>, ApplicativePlus<F> {
+abstract mixin class MonadPlus<F> implements Functor<F>, Applicative<F>, Monad<F>, ApplicativePlus<F> {
   F filter(F fa, bool predicate(a)) => bind(fa, (t) => predicate(t) ? pure(t) : empty());
   F where(F fa, bool predicate(a)) => filter(fa, predicate);
 
   F unite(F fa, Foldable gFoldable) => bind(fa, (ga) => gFoldable.foldLeft(ga, empty(), (F p, a) => plus(p, pure(a))));
 }
 
-abstract class MonadPlusOps<F, A> implements MonadOps<F, A>, ApplicativePlusOps<F, A>  {
+abstract mixin class MonadPlusOps<F, A> implements MonadOps<F, A>, ApplicativePlusOps<F, A>  {
   F filter(bool predicate(A a));// => bind((t) => predicate(t) ? pure(t) : empty());
   F where(bool predicate(A a));// => filter(predicate);
 }

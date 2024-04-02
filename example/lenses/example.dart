@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 
 // Technique: Declare immutable model
 
@@ -7,7 +7,7 @@ class Article {
   final IMap<String, Section> _sections;
   Article(this._title, this._sections);
   // Technique: Copy "constructor" for concise partial updates
-  Article copy({String? title, IMap<String, Section>? sections}) => new Article(title ?? this._title, sections ?? this._sections);
+  Article copy({String? title, IMap<String, Section>? sections}) => Article(title ?? this._title, sections ?? this._sections);
   @override String toString() => "Article(title=$_title, sections=$_sections)";
 
   // Technique: Lenses for accessing/updating relevant properties
@@ -20,7 +20,7 @@ class Section {
   final String _title;
   final IVector<Paragraph> _paragraphs;
   Section(this._title, this._paragraphs);
-  Section copy({String? title, IVector<Paragraph>? paragraphs}) => new Section(title ?? this._title, paragraphs ?? this._paragraphs);
+  Section copy({String? title, IVector<Paragraph>? paragraphs}) => Section(title ?? this._title, paragraphs ?? this._paragraphs);
   @override String toString() => "Section(title=$_title, paragraphs=$_paragraphs)";
 
   static final title = lensS<Section, String>((section) => section._title, (section, title) => section.copy(title: title));
@@ -31,7 +31,7 @@ class Section {
 class Paragraph {
   final IVector<String> _sentences;
   Paragraph(this._sentences);
-  Paragraph copy({IVector<String>? sentences}) => new Paragraph(sentences ?? this._sentences);
+  Paragraph copy({IVector<String>? sentences}) => Paragraph(sentences ?? this._sentences);
   @override String toString() => "Paragraph(sentences=\n${_sentences.intercalate(StringMi, "\n")})";
 
   static final sentences = lensS<Paragraph, IVector<String>>((paragraph) => paragraph._sentences, (paragraph, sentences) => paragraph.copy(sentences: sentences));
@@ -51,10 +51,10 @@ final missingSectionFirstParagraphThirdSentence = missingSection.eAndThenE(first
 
 
 void main() {
-  final lensArticle = new Article(
+  final lensArticle = Article(
       "Lenses",
-      imap({"abstract": new Section("Abstract",
-          ivector([new Paragraph(
+      imap({"abstract": Section("Abstract",
+          ivector([Paragraph(
               ivector([
                 "Immutable data structures simplify reasoning, concurrency, testability and modularity.",
                 "However, traversing and updating deeply nested immutable structures can give rise to cumbersome, repetitive code.",

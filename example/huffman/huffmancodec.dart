@@ -1,6 +1,6 @@
 library huffman_codec;
 
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 
 /*
   NOTE:
@@ -46,8 +46,8 @@ class HuffmanCodec {
     } else {
       // Technique: Folding an IMap into an AVLTree of leaf nodes, for use as a priority queue
       final AVLTree<_HuffmanNode> leafNodes = characterFrequencies
-          .foldLeftKV(new AVLTree(_HuffmanNode.order, emptyAVLNode()), (t, char, freq) => t.insert(new _LeafHuffmanNode(freq, char)));
-      return _buildTree(leafNodes).map((tree) => new HuffmanCodec._internal(tree, _buildCodeBook(tree)));
+          .foldLeftKV(AVLTree(_HuffmanNode.order, emptyAVLNode()), (t, char, freq) => t.insert(_LeafHuffmanNode(freq, char)));
+      return _buildTree(leafNodes).map((tree) => HuffmanCodec._internal(tree, _buildCodeBook(tree)));
     }
   }
 
@@ -57,7 +57,7 @@ class HuffmanCodec {
     final withoutL = nodes.remove(l);
     return withoutL.min().bind((r) {
       final withoutLR = withoutL.remove(r);
-      return _buildTree(withoutLR.insert(new _InternalHuffmanNode(l.frequency+r.frequency, l.char+r.char, l, r)));
+      return _buildTree(withoutLR.insert(_InternalHuffmanNode(l.frequency+r.frequency, l.char+r.char, l, r)));
     }) | l;
   });
 

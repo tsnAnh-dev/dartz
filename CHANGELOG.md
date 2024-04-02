@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0
+
+- Improve Dart 3 support
+
 ## 0.10.1
 
 - ALL additions in 0.10.1 were written by @cranst0n! (PRs #88, #91 and #93)
@@ -272,7 +276,7 @@
 
 ## 0.4.0
 
-- New mini library, dartz_streaming!
+- mini library, dartz_streaming!
 - Moved Conveyor and friends to dartz_streaming
 - Added lots of stream combinators for general use, IO and text processing
 - Added Execute IO primitive for running external commands
@@ -337,7 +341,7 @@
 
 ## 0.2.3
 
-- New TraversableMonadPlus type class, with partition operation
+- TraversableMonadPlus type class, with partition operation
 - TraversableMonadPlus instances for IList, List, IVector and Option
 - prependElement and appendElement operations for ApplicativePlus
 - better type inference for applicative mapX operations on Option and Either
@@ -357,7 +361,7 @@
 
 ## 0.2.0
 
-- New TraversableMonad and TraversableMonadOps
+- TraversableMonad and TraversableMonadOps
 - Moved traverseM operation to TraversableMonadOps
 - Removed IO stuff
 - Removed redundant type class instance aliases. Use IListMP instead of IListA, and so on
@@ -402,7 +406,7 @@
 - IVector, an immutable and persistent indexed sequence with O(log n) prepend, append, get and set operations
 - MonadPlus, Traversable and Monoid instances for IVector
 - Faster List monoid
-- Faster map and new set operation for IMap
+- Faster map and set operation for IMap
 - strengthL and strengthR operations for Functor
 - foldLeftM and foldRightM operations for Foldable
 

@@ -1,8 +1,6 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
-abstract class TraversableMonadPlus<F> implements Traversable<F>, MonadPlus<F> {
+abstract mixin class TraversableMonadPlus<F> implements Traversable<F>, MonadPlus<F> {
   // TODO: Only requires ApplicativePlus, not MonadPlus
   Tuple2<F, F> partition<A>(F fa, bool f(A a)) =>
       foldRight(fa, tuple2(empty(), empty()), (A a, acc) => f(a)
@@ -13,7 +11,7 @@ abstract class TraversableMonadPlus<F> implements Traversable<F>, MonadPlus<F> {
   F reverse(F fa) => foldLeft(fa, empty(), prependElement);
 }
 
-abstract class TraversableMonadPlusOps<F, A> implements TraversableOps<F, A>, MonadPlusOps<F, A> {
+abstract mixin class TraversableMonadPlusOps<F, A> implements TraversableOps<F, A>, MonadPlusOps<F, A> {
   /*
   // TODO: Only requires ApplicativePlus, not MonadPlus
   Tuple2<F, F> partition(bool f(A a)) =>

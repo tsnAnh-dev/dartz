@@ -13,7 +13,7 @@ Functional programming in Dart
 * Conveyor, an implementation of pure functional streaming
 * [Examples](https://github.com/spebbe/dartz/tree/master/example), showcasing core concepts
 
-##### New to functional programming?
+##### to functional programming?
 
 A good place to start learning is the excellent [Functional Programming in Scala](https://www.manning.com/books/functional-programming-in-scala) by Paul Chiusano and Rúnar Bjarnason. I can not recommend this book highly enough.  
 You can also take a look at [Category Theory for Programmers](https://github.com/hmemcpy/milewski-ctfp-pdf) by Bartosz Milewski.

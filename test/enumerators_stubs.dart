@@ -2,15 +2,15 @@
 
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 
 class Enumeration<A> {
   final Function0<Stream<A>> _stream;
 
   Enumeration(this._stream);
 
-  Enumeration<B> map<B>(B f(A a)) => new Enumeration(() => _stream().map(f));
-  Enumeration<B> flatMap<B>(Enumeration<B> f(A a)) => new Enumeration(() => _stream().asyncExpand((a) => f(a)._stream()));
+  Enumeration<B> map<B>(B f(A a)) => Enumeration(() => _stream().map(f));
+  Enumeration<B> flatMap<B>(Enumeration<B> f(A a)) => Enumeration(() => _stream().asyncExpand((a) => f(a)._stream()));
   Future<bool> forall(bool predicate(A a)) => _stream().take(100).every(predicate);
 }
 

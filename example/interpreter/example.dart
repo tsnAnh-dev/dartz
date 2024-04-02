@@ -1,6 +1,6 @@
 library interpreter_example;
 
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 import 'minilanguage.dart';
 
 main() async {

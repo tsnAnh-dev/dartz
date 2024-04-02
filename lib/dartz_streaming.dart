@@ -1,7 +1,7 @@
 library dartz_streaming;
 
 import 'dart:collection';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 
 import 'dart:async';
 import 'dart:convert';

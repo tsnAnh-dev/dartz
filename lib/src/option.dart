@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz;
 
 abstract class Option<A> implements TraversableMonadPlusOps<Option, A> {
@@ -26,13 +24,13 @@ abstract class Option<A> implements TraversableMonadPlusOps<Option, A> {
 
   IVector<Option<B>> traverseIVector<B>(IVector<B> f(A a)) => fold(() => emptyVector<Option<B>>().appendElement(none()), (a) => f(a).map(some));
 
-  Future<Option<B>> traverseFuture<B>(Future<B> f(A a)) => fold(() => new Future.microtask(none), (a) => f(a).then(some));
+  Future<Option<B>> traverseFuture<B>(Future<B> f(A a)) => fold(() => Future.microtask(none), (a) => f(a).then(some));
 
-  State<S, Option<B>> traverseState<S, B>(State<S, B> f(A a)) => fold(() => new State((s) => tuple2(none(), s)), (a) => f(a).map(some));
+  State<S, Option<B>> traverseState<S, B>(State<S, B> f(A a)) => fold(() => State((s) => tuple2(none(), s)), (a) => f(a).map(some));
 
   Task<Option<B>> traverseTask<B>(Task<B> f(A a)) => fold(() => Task.value(none()), (a) => f(a).map(some));
 
-  Free<F, Option<B>> traverseFree<F, B>(Free<F, B> f(A a)) => fold(() => new Pure(none()), (a) => f(a).map(some));
+  Free<F, Option<B>> traverseFree<F, B>(Free<F, B> f(A a)) => fold(() => Pure(none()), (a) => f(a).map(some));
 
   static IList<Option<A>> sequenceIList<A>(Option<IList<A>> ola) => ola.traverseIList(id);
 
@@ -189,7 +187,7 @@ abstract class Option<A> implements TraversableMonadPlusOps<Option, A> {
 
   // PURISTS BEWARE: side effecty stuff below -- proceed with caution!
 
-  Iterable<A> toIterable() => fold(() => const Iterable.empty(), (a) => new _SingletonIterable(a));
+  Iterable<A> toIterable() => fold(() => const Iterable.empty(), (a) => _SingletonIterable(a));
   Iterator<A> iterator() => toIterable().iterator;
 
   void forEach(void sideEffect(A a)) => fold(() => null, sideEffect);
@@ -213,8 +211,8 @@ class None<A> extends Option<A> {
   @override int get hashCode => 0;
 }
 
-Option<A> none<A>() => new None();
-Option<A> some<A>(A a) => new Some(a);
+Option<A> none<A>() => None();
+Option<A> some<A>(A a) => Some(a);
 Option<A> option<A>(bool test, A value) => test ? some(value) : none();
 Option<A> optionOf<A>(A? value) => value != null ? some(value) : none();
 
@@ -241,15 +239,15 @@ class OptionMonoid<A> extends Monoid<Option<A>> {
 
   @override Option<A> append(Option<A> oa1, Option<A> oa2) => oa1.fold(() => oa2, (a1) => oa2.fold(() => oa1, (a2) => some(_tSemigroup.append(a1, a2))));
 }
-Monoid<Option<A>> optionMi<A>(Semigroup<A> si) => new OptionMonoid(si);
+Monoid<Option<A>> optionMi<A>(Semigroup<A> si) => OptionMonoid(si);
 
 class _SingletonIterable<A> extends Iterable<A> {
   final A _singleton;
   _SingletonIterable(this._singleton);
-  @override Iterator<A> get iterator => new _SingletonIterator(_singleton);
+  @override Iterator<A> get iterator => _SingletonIterator(_singleton);
 }
 
-class _SingletonIterator<A> extends Iterator<A> {
+class _SingletonIterator<A> implements Iterator<A> {
   final A _singleton;
   int _moves = 0;
   _SingletonIterator(this._singleton);

@@ -2,7 +2,7 @@
 
 part of dartz;
 
-abstract class Monad<F> implements Applicative<F> {
+abstract mixin class Monad<F> implements Applicative<F> {
   F bind<A, B>(F fa, F f(A a));
   
   F join(F ffa) => bind(ffa, (F f) => f);
@@ -10,7 +10,7 @@ abstract class Monad<F> implements Applicative<F> {
   @override F map<A, B>(F fa, B f(A a)) => bind(fa, (A a) => pure(f(a)));
   @override F ap<A, B>(F fa, F ff) => bind(ff, (f(_)) => map(fa, f));
   
-  //Monad<F> /** Monad<F<G<_>>> **/ composeM(Monad G, Traversable GT) => new ComposedMonad(this, G, GT);
+  //Monad<F> /** Monad<F<G<_>>> **/ composeM(Monad G, Traversable GT) => ComposedMonad(this, G, GT);
 }
 /*
 // Compose Monad<F<_>> with Monad<G<_>> and Traversable<G<_>>, yielding Monad<F<G<_>>>
@@ -26,7 +26,7 @@ class ComposedMonad<F, G> extends Functor<F> with Applicative<F>, Monad<F> {
   @override F bind<A, B>(F fga, Function1<dynamic, F>f) => _F.bind(fga, (G ga) => _F.map(_GT.traverse(_F, ga, f), _G.join));
 }
 */
-abstract class MonadOps<F, A> implements ApplicativeOps<F, A> {
+abstract interface class MonadOps<F, A> implements ApplicativeOps<F, A> {
   F bind<B>(covariant F f(A a));
 
   @override F map<B>(B f(A a));// => bind((a) => pure(f(a)));
@@ -36,7 +36,7 @@ abstract class MonadOps<F, A> implements ApplicativeOps<F, A> {
   F replace<B>(B replacement) => map((_) => replacement);
 }
 
-class MonadOpsMonad<F extends MonadOps> extends Functor<F> with Applicative<F>, Monad<F> {
+base class MonadOpsMonad<F extends MonadOps> extends Functor<F> with Applicative<F>, Monad<F> {
   final Function1<dynamic, F> _pure;
   MonadOpsMonad(this._pure);
   @override F pure<A>(a) => _pure(a);

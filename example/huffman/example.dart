@@ -1,7 +1,7 @@
 library huffman_example;
 
 import 'huffmancodec.dart';
-import 'package:dartz/dartz.dart';
+import 'package:dart3z/dartz.dart';
 
 void main() {
 

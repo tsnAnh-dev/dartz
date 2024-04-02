@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_new
-
 part of dartz_streaming;
 
 /*
@@ -14,12 +12,12 @@ abstract class Conveyor<F, O> implements MonadPlusOps<Conveyor<F, dynamic>, O> {
 
   A interpret<A>(A ifProduce(O head, Conveyor<F, O> tail), covariant A ifConsume(F req, Function1<Either<Object, dynamic>, Conveyor<F, O>> recv), A ifHalt(Object err));
 
-  static Conveyor<F, O> produce<F, O>(O head, [Conveyor<F, O>? tail]) => new _Produce(head, tail ?? halt(End));
-  static Conveyor<F, O> consume<F, A, O>(F req, Function1<Either<Object, A>, Conveyor<F, O>> recv) => new _Consume(req, recv);
-  static Conveyor<F, O> halt<F, O>([Object? err]) => new _Halt(err ?? End);
+  static Conveyor<F, O> produce<F, O>(O head, [Conveyor<F, O>? tail]) => _Produce(head, tail ?? halt(End));
+  static Conveyor<F, O> consume<F, A, O>(F req, Function1<Either<Object, A>, Conveyor<F, O>> recv) => _Consume(req, recv);
+  static Conveyor<F, O> halt<F, O>([Object? err]) => _Halt(err ?? End);
 
-  static final End = new _End();
-  static final Kill = new _Kill();
+  static final End = _End();
+  static final Kill = _Kill();
 
   Conveyor<F, B> pure<B>(B b) => produce(b);
 
@@ -91,15 +89,15 @@ abstract class Conveyor<F, O> implements MonadPlusOps<Conveyor<F, dynamic>, O> {
     Task<IList<O>> go(Conveyor<Task, O> cur, IList<O> acc) =>
       cur.interpret((h, t) => go(t, cons(h, acc)),
           (req, recv) => req.attempt().bind((Either<Object, dynamic> e) => go(Try(() => recv(e)), acc)),
-          (err) => err == End ? new Task(() => new Future.value(acc.reverse())) : new Task(() => new Future.error(err)));
+          (err) => err == End ? Task(() => Future.value(acc.reverse())) : Task(() => Future.error(err)));
     return go(cto, nil());
   }
 
   static Free<IOOp, IList<O>> runLogIO<O>(Conveyor<Free<IOOp, dynamic>, O> cio) {
     Free<IOOp, IList<O>> go(Conveyor<Free<IOOp, dynamic>, O> cur, IList<O> acc) =>
       cur.interpret((h, t) => go(t, cons(h, acc)),
-          (req, recv) => liftF<IOOp, Either<Object, dynamic>>(new Attempt(req)).flatMap((e) => go(Try(() => recv(e)), acc)),
-          (err) => err == End ? new Pure(acc.reverse()) : liftF(new Fail(err)));
+          (req, recv) => liftF<IOOp, Either<Object, dynamic>>(Attempt(req)).flatMap((e) => go(Try(() => recv(e)), acc)),
+          (err) => err == End ? Pure(acc.reverse()) : liftF(Fail(err)));
     return go(cio, nil());
   }
 
@@ -241,4 +239,4 @@ class _End {}
 
 class _Kill {}
 
-MonadPlus<Conveyor<F, O>> conveyorMP<F, O>() => new MonadPlusOpsMonadPlus((a) => Conveyor.produce(cast<O>(a)), () => Conveyor.halt(Conveyor.End));
+MonadPlus<Conveyor<F, O>> conveyorMP<F, O>() => MonadPlusOpsMonadPlus((a) => Conveyor.produce(cast<O>(a)), () => Conveyor.halt(Conveyor.End));
