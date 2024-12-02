@@ -18,7 +18,7 @@ class Text {
         return lines.reverse().uncons(Pipe.halt, (newSpill, completeLines) =>
             completeLines.foldLeft(_lines(option(newSpill.isNotEmpty, newSpill)), (rest, line) => Conveyor.produce(line, rest))
         );
-      }, () => spill.fold(Pipe.halt, Pipe.produce));
+      }, () => spill.fold(ifNone: Pipe.halt, ifSome: Pipe.produce));
 
   // TODO: missing some corner case here, right?
   static Conveyor<From<UnmodifiableListView<int>>, String> _decodeUtf8() {

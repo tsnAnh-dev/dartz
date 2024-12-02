@@ -29,9 +29,9 @@ void main() {
   Evaluation<String, IMap<String, double>, IList<String>, IList<double>, dynamic> rpnInterpreter(RPNOp<dynamic> op) {
     if (op is PushSymbol) {
       return M.asks((IMap<String, double> symbols) => symbols[op.symbol]).bind((Option<double> symbolValue) {
-        return symbolValue.fold(() =>
+        return symbolValue.fold(ifNone: () =>
             M.raiseError("Undefined symbol: ${op.symbol}"),
-            (double value) => M.write(ilist(["Pushing value of ${op.symbol}: $value"])).andThen(M.modify((IList<double> stack) => Cons(value, stack))));
+            ifSome: (double value) => M.write(ilist(["Pushing value of ${op.symbol}: $value"])).andThen(M.modify((IList<double> stack) => Cons(value, stack))));
       });
 
     } else if (op is Push) {
@@ -39,9 +39,9 @@ void main() {
 
     } else if (op is Pop) {
       return M.get().bind((IList<double> stack) {
-        return stack.headOption.fold(() =>
+        return stack.headOption.fold(ifNone: () =>
             M.raiseError("Stack underflow"),
-            (double value) => M.put(stack.tailOption | nil<double>()).andThen(M.pure(value)));
+            ifSome: (double value) => M.put(stack.tailOption | nil<double>()).andThen(M.pure(value)));
       });
 
     } else {

@@ -9,7 +9,7 @@ import 'package:dart3z/dartz_unsafe.dart';
 main() async {
   // set up some paths
   final libDir = Platform.script.resolve("../../lib/");
-  final dartzPath = libDir.resolve("dartz.dart");
+  final dartzPath = libDir.resolve("dart3z.dart");
 
   final Conveyor<Free<IOOp, dynamic>, String> dartzPublicClasses = IO.fileLineReader(dartzPath.path) // stream file lines
       .filter((line) => line.startsWith("part '"))                                                   // find 'part' declarations

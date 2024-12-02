@@ -1,11 +1,12 @@
 import "package:test/test.dart";
+
 //import 'package:enumerators/combinators.dart' as c;
 import 'combinators_stubs.dart' as c;
+
 //import 'package:propcheck/propcheck.dart';
 import 'propcheck_stubs.dart';
 import 'package:dart3z/dartz.dart';
 import 'laws.dart';
-
 
 void main() {
   final qc = QuickCheck(maxSize: 300, seed: 42);
@@ -16,13 +17,15 @@ void main() {
 
   group("IVectorTr", () => checkTraversableLaws(IVectorTr, intIVectors));
 
-  group("IVectorM+Foldable", () => checkFoldableMonadLaws(IVectorTr, IVectorMP));
+  group(
+      "IVectorM+Foldable", () => checkFoldableMonadLaws(IVectorTr, IVectorMP));
 
   group("IVectorMi", () => checkMonoidLaws(ivectorMi<int>(), intIVectors));
 
   test("IVector indexing", () {
     final IVector<String> v = ivector(["a", "b", "c"]);
-    final IVector<String> vReversed = v.foldLeft(emptyVector(), (p, e) => p.prependElement(e));
+    final IVector<String> vReversed =
+        v.foldLeft(emptyVector(), (p, e) => p.prependElement(e));
     expect(vReversed[-1], none());
     expect(vReversed[0], some("c"));
     expect(vReversed[1], some("b"));
@@ -30,7 +33,8 @@ void main() {
     expect(vReversed[3], none());
 
     final IVector<String> v2 = v.plus(vReversed);
-    expect(v2.mapWithIndex((i, s) => v2[i] == some(s)).concatenate(BoolAndMi), true);
+    expect(v2.mapWithIndex((i, s) => v2[i] == some(s)).concatenate(BoolAndMi),
+        true);
 
     expect(v2.set(1, "d"), some(ivector(["a", "d", "c", "c", "b", "a"])));
     expect(v2.set(3, "d"), some(ivector(["a", "b", "c", "d", "b", "a"])));
@@ -38,14 +42,26 @@ void main() {
   });
 
   test("IVector foldLeftWithIndex", () {
-    final v = ivector(["c"]).prependElement("b").prependElement("a").appendElement("d").appendElement("e");
-    final vIndices = v.foldLeftWithIndex(nil<String>(), (IList<String> acc, i, v) => cons("$i$v", acc)).reverse();
+    final v = ivector(["c"])
+        .prependElement("b")
+        .prependElement("a")
+        .appendElement("d")
+        .appendElement("e");
+    final vIndices = v
+        .foldLeftWithIndex(
+            nil<String>(), (IList<String> acc, i, v) => cons("$i$v", acc))
+        .reverse();
     expect(vIndices, ilist(["0a", "1b", "2c", "3d", "4e"]));
   });
 
   test("IVector foldRightWithIndex", () {
-    final v = ivector(["c"]).prependElement("b").prependElement("a").appendElement("d").appendElement("e");
-    final vIndices = v.foldRightWithIndex(nil<String>(), (i, v, IList<String> acc) => cons("$i$v", acc));
+    final v = ivector(["c"])
+        .prependElement("b")
+        .prependElement("a")
+        .appendElement("d")
+        .appendElement("e");
+    final vIndices = v.foldRightWithIndex(
+        nil<String>(), (i, v, IList<String> acc) => cons("$i$v", acc));
     expect(vIndices, ilist(["0a", "1b", "2c", "3d", "4e"]));
   });
 
@@ -70,7 +86,9 @@ void main() {
       final v = IVector.from(l);
       if (l.length > 0) {
         final removed = l.removeAt(0);
-        return v.removeFirst().fold(() => false, (t) => t.value1 == removed && t.value2 == IVector.from(l));
+        return v.removeFirst().fold(
+            ifNone: () => false,
+            ifSome: (t) => t.value1 == removed && t.value2 == IVector.from(l));
       } else {
         return v.removeFirst() == none();
       }
@@ -96,7 +114,8 @@ void main() {
       final v = IVector.from(l);
       if (l.length > 0) {
         final removed = l.removeLast();
-        return v.removeLast().fold(() => false, (t) => t.value1 == removed && t.value2 == IVector.from(l));
+        return v.removeLast().fold(ifNone: () => false,
+            ifSome: (t) => t.value1 == removed && t.value2 == IVector.from(l));
       } else {
         return v.removeLast() == none();
       }
@@ -119,21 +138,26 @@ void main() {
   test("IVector foldLeftWithIndexBetween", () {
     qc.check(forall(intIVectors, (dynamicV) {
       final v = dynamicV;
-      final partialSum = v.foldLeftWithIndexBetween<int>(1, v.length()-2, 0, (sum, _, i) => sum+i);
+      final partialSum = v.foldLeftWithIndexBetween<int>(
+          1, v.length() - 2, 0, (sum, _, i) => sum + i);
       return partialSum == v.dropFirst().dropLast().concatenate(IntSumMi);
     }));
   });
 
   test("IVector foldRightWithIndexBetween", () {
     qc.check(forall(intIVectors, (IVector<int> v) {
-      final partialSum = v.foldRightWithIndexBetween<int>(1, (v).length()-2, 0, (_, i, sum) => sum+i);
+      final partialSum = v.foldRightWithIndexBetween<int>(
+          1, (v).length() - 2, 0, (_, i, sum) => sum + i);
       return partialSum == v.dropFirst().dropLast().concatenate(IntSumMi);
     }));
   });
 
   group("IVector FoldableOps", () => checkFoldableOpsProperties(intIVectors));
 
-  test("iterable", () => qc.check(forall(intIVectors, (v) => v == ivector((v).toIterable()))));
+  test(
+      "iterable",
+      () =>
+          qc.check(forall(intIVectors, (v) => v == ivector((v).toIterable()))));
 
   test("flattenOption", () {
     qc.check(forall(intIVectors, (IVector<int> v) {
@@ -147,26 +171,36 @@ void main() {
   test("flattenIVector", () {
     qc.check(forall(intIVectors, (dynamicV) {
       final v = dynamicV;
-      final vv = v.map((int i) => i % 2 == 0 ? ivector([i]) : emptyVector<int>());
+      final vv =
+          v.map((int i) => i % 2 == 0 ? ivector([i]) : emptyVector<int>());
       final flattenedV = IVector.flattenIVector(vv);
       final evenV = v.filter((i) => i % 2 == 0);
       return flattenedV == evenV;
     }));
   });
 
-  test("isEmpty", () => qc.check(forall(intIVectors, (IVector<int> v) => (v.length() == 0) == v.isEmpty)));
+  test(
+      "isEmpty",
+      () => qc.check(forall(
+          intIVectors, (IVector<int> v) => (v.length() == 0) == v.isEmpty)));
 
   test("indexOf", () {
-    qc.check(forall3(intIVectors, c.ints, c.ints, (IVector<int> v, int i, int s) {
+    qc.check(
+        forall3(intIVectors, c.ints, c.ints, (IVector<int> v, int i, int s) {
       final index = v.isEmpty ? 0 : i.abs() % v.length();
       final start = v.isEmpty ? 0 : s.abs() % v.length();
-      final element = v[index]|0;
-      return v.indexOf(element, start: start)|-1 == v.toIterable().toList().indexOf(element, start);
+      final element = v[index] | 0;
+      return v.indexOf(element, start: start) | -1 ==
+          v.toIterable().toList().indexOf(element, start);
     }));
   });
 
   test("indexOf manual", () {
-    final v = ivector(["x", "b"]).dropFirst().prependElement("a").appendElement("c").plus(ivector(["a", "b", "c"]));
+    final v = ivector(["x", "b"])
+        .dropFirst()
+        .prependElement("a")
+        .appendElement("c")
+        .plus(ivector(["a", "b", "c"]));
     expect(v.indexOf("a"), some(0));
     expect(v.indexOf("b"), some(1));
     expect(v.indexOf("c"), some(2));

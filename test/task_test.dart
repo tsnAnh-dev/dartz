@@ -21,7 +21,7 @@ void main() {
         Task.delay(() => "notanumber").map(num.parse).attempt();
 
     final result = await t.run();
-    expect(result.fold(id, id) is FormatException, true);
+    expect(result.fold(ifLeft: id, ifRight: id) is FormatException, true);
   });
 
   test("Task.both (concurrent)", () async {
@@ -113,8 +113,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => fail('Task.handleError failed: $err'),
-      (a) => expect(a, 'handled: error'),
+      ifLeft: (err) => fail('Task.handleError failed: $err'),
+      ifRight: (a) => expect(a, 'handled: error'),
     );
   });
 
@@ -125,8 +125,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => fail('Task.handleErrorWith failed: $err'),
-      (a) => expect(a, 'handled: error'),
+      ifLeft: (err) => fail('Task.handleErrorWith failed: $err'),
+      ifRight: (a) => expect(a, 'handled: error'),
     );
   });
 
@@ -137,8 +137,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => expect(err, 'kaboom!'),
-      (a) => fail('Task.handleErrorWith failed: $a'),
+      ifLeft: (err) => expect(err, 'kaboom!'),
+      ifRight: (a) => fail('Task.handleErrorWith failed: $a'),
     );
   });
 
@@ -147,13 +147,13 @@ void main() {
     final resultNone = await Task.failed<int>('FAIL').option.run();
 
     resultSome.fold(
-      () => fail('Task.option [some] failed: none'),
-      (a) => expect(a, 42),
+      ifNone: () => fail('Task.option [some] failed: none'),
+      ifSome: (a) => expect(a, 42),
     );
 
     resultNone.fold(
-      () => expect(true, true),
-      (a) => fail('Task.option [none] failed: a'),
+      ifNone: () => expect(true, true),
+      ifSome: (a) => fail('Task.option [none] failed: a'),
     );
   });
 
@@ -162,8 +162,8 @@ void main() {
         Task.value(42).product(Task.value('other')).attempt();
 
     final result = await t.run();
-    result.fold((err) => fail('Task.product failed: $err'),
-        (tuple) => expect(tuple, tuple2(42, 'other')));
+    result.fold(ifLeft: (err) => fail('Task.product failed: $err'),
+        ifRight: (tuple) => expect(tuple, tuple2(42, 'other')));
   });
 
   test("Task.product (serial)", () async {
@@ -181,7 +181,7 @@ void main() {
 
     final result = await t.run();
     result.fold(
-        (err) => fail('Task.productL failed: $err'), (a) => expect(a, 42));
+        ifLeft: (err) => fail('Task.productL failed: $err'), ifRight: (a) => expect(a, 42));
   });
 
   test("Task.productR", () async {
@@ -190,7 +190,7 @@ void main() {
 
     final result = await t.run();
     result.fold(
-        (err) => fail('Task.productR failed: $err'), (a) => expect(a, 'foo'));
+        ifLeft: (err) => fail('Task.productR failed: $err'), ifRight: (a) => expect(a, 'foo'));
   });
 
   test("Task.redeem", () async {
@@ -198,8 +198,8 @@ void main() {
         Task.failed<String>('error').redeem((_) => 'redeemed!', id).attempt();
 
     final result = await t.run();
-    result.fold((err) => fail('Task.redeem failed: $err'),
-        (a) => expect(a, 'redeemed!'));
+    result.fold(ifLeft: (err) => fail('Task.redeem failed: $err'),
+        ifRight: (a) => expect(a, 'redeemed!'));
   });
 
   test("Task.redeemWith", () async {
@@ -209,8 +209,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => fail('Task.redeemWith failed: $err'),
-      (a) => expect(a, 'redeemed!'),
+      ifLeft: (err) => fail('Task.redeemWith failed: $err'),
+      ifRight: (a) => expect(a, 'redeemed!'),
     );
   });
 
@@ -220,7 +220,7 @@ void main() {
 
     final resA = await a.race(b).run();
 
-    resA.fold((a) => expect(a, 'a'), (b) => fail('Task.race A failed: $b'));
+    resA.fold(ifLeft: (a) => expect(a, 'a'), ifRight: (b) => fail('Task.race A failed: $b'));
   });
 
   test("Task.race B", () async {
@@ -229,7 +229,7 @@ void main() {
 
     final resB = await a.race(b).run();
 
-    resB.fold((a) => fail('Task.race A failed: $a'), (b) => expect(b, 42));
+    resB.fold(ifLeft: (a) => fail('Task.race A failed: $a'), ifRight: (b) => expect(b, 42));
   });
 
   test("Task.race (same type)", () async {
@@ -238,7 +238,7 @@ void main() {
 
     final resB = await a.race(b).run();
 
-    resB.fold((a) => fail('Task.race failed: $a'), (b) => expect(b, 42));
+    resB.fold(ifLeft: (a) => fail('Task.race failed: $a'), ifRight: (b) => expect(b, 42));
   });
 
   test("Task.replicate", () async {
@@ -257,8 +257,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => fail('Task.timeout failed: $err'),
-      (a) => expect(a, 'foo'),
+      ifLeft: (err) => fail('Task.timeout failed: $err'),
+      ifRight: (a) => expect(a, 'foo'),
     );
   });
 
@@ -269,7 +269,7 @@ void main() {
         .attempt();
 
     final result = await t.run();
-    expect(result.fold(id, id) is TimeoutException, true);
+    expect(result.fold(ifLeft: id, ifRight: id) is TimeoutException, true);
   });
 
   test("Task.timeoutTo (fallback)", () async {
@@ -280,8 +280,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => fail('Task.timeoutTo failed: $err'),
-      (a) => expect(a, 'fallback'),
+      ifLeft: (err) => fail('Task.timeoutTo failed: $err'),
+      ifRight: (a) => expect(a, 'fallback'),
     );
   });
 
@@ -293,8 +293,8 @@ void main() {
 
     final result = await t.run();
     result.fold(
-      (err) => expect(err is FormatException, true),
-      (a) => fail('Task.timeoutTo failed: $a'),
+      ifLeft: (err) => expect(err is FormatException, true),
+      ifRight: (a) => fail('Task.timeoutTo failed: $a'),
     );
   });
 
